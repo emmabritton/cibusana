@@ -4,9 +4,8 @@
 
 Execute scripts this order
 
-1. `create/schema.sql`
-2. `create/*.sql`
-3. `content/*.sql`
+1. `create.sql`
+2. `content/*.sql`
 
 ## Assumptions
 
@@ -14,4 +13,4 @@ Admin user is called `doadmin`
 
 ## Tech notes
 
-Your server user needs to be assigned the `read_write_journal` role.
+Your server user (called `foodserver` in script) needs to be assigned the `read_write_journal` role.
