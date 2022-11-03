@@ -104,7 +104,9 @@ CREATE TABLE "food-app".meal_entry (
     entry_id uuid NOT NULL,
     is_meal boolean NOT NULL,
     meal_time text NOT NULL,
-    date date NOT NULL
+    date date NOT NULL,
+    amount integer NOT NULL,
+    calories integer NOT NULL
 );
 
 CREATE SEQUENCE "food-app".user_tokens_id_seq
