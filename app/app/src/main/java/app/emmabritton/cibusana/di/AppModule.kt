@@ -1,0 +1,39 @@
+package app.emmabritton.cibusana.di
+
+import app.emmabritton.cibusana.data.DI_URL
+import app.emmabritton.cibusana.data.Logger
+import okhttp3.Interceptor
+import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+import timber.log.Timber
+
+//Intellij says the cast is not needed, but is for Koin
+@Suppress("USELESS_CAST")
+val appModule = module {
+    single {
+        HttpLoggingInterceptor {
+            Timber.tag("HTTP").d(it)
+        } as Interceptor
+    }
+
+    single {
+        object : Logger {
+            override fun d(msg: String) {
+                Timber.d(msg)
+            }
+
+            override fun e(msg: String) {
+                Timber.e(msg)
+            }
+
+            override fun e(exception: Exception, msg: String) {
+                Timber.e(exception, msg)
+            }
+        } as Logger
+    }
+
+    single(named(DI_URL)) {
+        "https://cibusana.com"
+    }
+}

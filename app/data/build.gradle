@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id("com.google.devtools.ksp").version("1.7.20-1.0.7")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    implementation "io.insert-koin:koin-core:$koinVersion"
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVer"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVer"
+    implementation "com.squareup.okhttp3:okhttp:$okhttpVer"
+
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:$moshiVer"
+    implementation "com.squareup.moshi:moshi:$moshiVer"
+}
