@@ -1,9 +1,9 @@
-package app.emmabritton.cibusana.system.login
+package app.emmabritton.cibusana.flow.login
 
 import app.emmabritton.cibusana.system.AppEffect
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.InvalidState
-import app.emmabritton.cibusana.system.register.RegisterState
+import app.emmabritton.cibusana.flow.register.RegisterState
 
 fun reduceLoginAction(action: LoginAction, state: AppState): AppEffect {
     if (state.uiState !is LoginState) {
@@ -44,10 +44,6 @@ fun reduceLoginAction(action: LoginAction, state: AppState): AppEffect {
         }
         is LoginAction.UserClearedError -> AppEffect(
             state.copy(uiState = (state.uiState as LoginState.Error).toEntering()),
-            emptyList()
-        )
-        is LoginAction.Accepted -> AppEffect(
-            state.copy(uiState = LoginState.LoggedIn(action.name, action.token)),
             emptyList()
         )
     }

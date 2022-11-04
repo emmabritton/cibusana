@@ -1,7 +1,7 @@
 package app.emmabritton.cibusana
 
 import app.emmabritton.cibusana.system.AppState
-import app.emmabritton.cibusana.system.welcome.WelcomeState
+import app.emmabritton.cibusana.flow.welcome.WelcomeState
 import org.junit.Test
 
 class AppReduceTests {

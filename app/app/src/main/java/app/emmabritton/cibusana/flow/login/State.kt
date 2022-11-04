@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.system.login
+package app.emmabritton.cibusana.flow.login
 
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
@@ -20,6 +20,4 @@ sealed class LoginState(override val config: UiStateConfig) : UiState {
     data class Error(val message: String, val details: Entering): LoginState(UiStateConfig.tempScreen()) {
         fun toEntering() = details
     }
-
-    data class LoggedIn(val name: String, val token: String): LoginState(UiStateConfig.originScreen())
 }

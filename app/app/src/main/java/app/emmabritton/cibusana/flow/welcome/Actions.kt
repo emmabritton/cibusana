@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.system.welcome
+package app.emmabritton.cibusana.flow.welcome
 
 import app.emmabritton.system.Action
 

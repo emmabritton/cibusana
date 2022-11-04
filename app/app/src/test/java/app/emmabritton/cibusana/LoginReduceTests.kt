@@ -1,8 +1,8 @@
 package app.emmabritton.cibusana
 
 import app.emmabritton.cibusana.system.AppState
-import app.emmabritton.cibusana.system.login.LoginAction
-import app.emmabritton.cibusana.system.login.LoginState
+import app.emmabritton.cibusana.flow.login.LoginAction
+import app.emmabritton.cibusana.flow.login.LoginState
 import app.emmabritton.cibusana.system.reduce
 import org.junit.Test
 import kotlin.test.assertEquals

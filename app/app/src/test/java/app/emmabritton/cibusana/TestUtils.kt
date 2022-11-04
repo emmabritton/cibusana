@@ -4,7 +4,7 @@ import app.emmabritton.cibusana.data.Logger
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.Runtime
 import app.emmabritton.cibusana.system.UiState
-import app.emmabritton.cibusana.system.login.LoginState
+import app.emmabritton.cibusana.flow.login.LoginState
 import app.emmabritton.system.ImmediateCommandHandler
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor

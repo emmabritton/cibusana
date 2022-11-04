@@ -1,9 +1,9 @@
-package app.emmabritton.cibusana.system.welcome
+package app.emmabritton.cibusana.flow.welcome
 
 import app.emmabritton.cibusana.system.AppEffect
 import app.emmabritton.cibusana.system.AppState
-import app.emmabritton.cibusana.system.login.LoginState
-import app.emmabritton.cibusana.system.register.RegisterState
+import app.emmabritton.cibusana.flow.login.LoginState
+import app.emmabritton.cibusana.flow.register.RegisterState
 
 fun reduceWelcomeAction(action: WelcomeAction, state: AppState): AppEffect {
     return when (action) {

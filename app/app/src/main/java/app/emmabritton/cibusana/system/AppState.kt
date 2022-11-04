@@ -1,12 +1,14 @@
 package app.emmabritton.cibusana.system
 
-import app.emmabritton.cibusana.system.welcome.WelcomeState
+import app.emmabritton.cibusana.flow.welcome.WelcomeState
+import app.emmabritton.cibusana.models.User
 import app.emmabritton.system.State
 
 data class AppState(
     val error: String?,
     val uiState: UiState,
-    val uiHistory: List<UiState>
+    val uiHistory: List<UiState>,
+    val user: User?
 ) : State {
     override fun toString(): String {
         return if (error != null) {
@@ -19,7 +21,7 @@ data class AppState(
     companion object {
         fun init(): AppState {
             val uiState = WelcomeState
-            return AppState(null, uiState, listOf(uiState))
+            return AppState(null, uiState, listOf(uiState), null)
         }
     }
 }

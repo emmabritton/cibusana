@@ -7,12 +7,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.emmabritton.cibusana.system.login.LoginState
-import app.emmabritton.cibusana.system.register.RegisterState
-import app.emmabritton.cibusana.system.welcome.WelcomeState
-import app.emmabritton.cibusana.ui.LoginUi
-import app.emmabritton.cibusana.ui.RegisterUi
-import app.emmabritton.cibusana.ui.WelcomeUi
+import app.emmabritton.cibusana.flow.home.HomeState
+import app.emmabritton.cibusana.flow.login.LoginState
+import app.emmabritton.cibusana.flow.register.RegisterState
+import app.emmabritton.cibusana.flow.welcome.WelcomeState
+import app.emmabritton.cibusana.flow.home.HomeUi
+import app.emmabritton.cibusana.flow.login.LoginUi
+import app.emmabritton.cibusana.flow.register.RegisterUi
+import app.emmabritton.cibusana.flow.welcome.WelcomeUi
 import app.emmabritton.cibusana.ui.theme.Dimen
 import app.emmabritton.system.ActionReceiver
 
@@ -34,6 +36,11 @@ fun Render(state: AppState, actionReceiver: ActionReceiver, modifier: Modifier =
                 )
                 is RegisterState -> RegisterUi(
                     state = state.uiState,
+                    actionReceiver = actionReceiver
+                )
+                is HomeState -> HomeUi(
+                    state = state,
+                    uiState = state.uiState,
                     actionReceiver = actionReceiver
                 )
                 else -> actionReceiver.receive(UnknownUiState(state.uiState.javaClass.simpleName))

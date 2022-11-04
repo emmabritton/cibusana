@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.system.login
+package app.emmabritton.cibusana.flow.login
 
 import app.emmabritton.system.Action
 
@@ -12,5 +12,4 @@ sealed class LoginAction(val stateValidator: (LoginState) -> Boolean) : Action {
     object UserSubmitted : LoginAction(enteringOnly)
     object UserClearedError : LoginAction(errorOnly)
     class Rejected(val reasons: List<Int>) : LoginAction(loadingOnly)
-    class Accepted(val name: String, val token: String) : LoginAction(loadingOnly)
 }

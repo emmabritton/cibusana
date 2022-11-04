@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.ui
+package app.emmabritton.cibusana.flow.login
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import app.emmabritton.cibusana.R
-import app.emmabritton.cibusana.system.login.*
 import app.emmabritton.cibusana.ui.theme.Dimen
 import app.emmabritton.cibusana.ui.theme.Dimen.Padding
 import app.emmabritton.system.ActionReceiver
@@ -26,7 +25,6 @@ fun LoginUi(state: LoginState, actionReceiver: ActionReceiver, modifier: Modifie
         )
         is LoginState.Error -> ErrorUi(state = state, actionReceiver = actionReceiver, modifier)
         is LoginState.Loading -> LoadingUi(modifier)
-        is LoginState.LoggedIn -> LoggedInUi(name = state.name, modifier)
     }
 }
 
@@ -74,7 +72,11 @@ private fun EnteringUi(
             .then(modifier),
         horizontalAlignment = Alignment.End
     ) {
-        Text(stringResource(id = R.string.login_title), modifier = Modifier.fillMaxWidth(), style = MaterialTheme.typography.titleLarge)
+        Text(
+            stringResource(id = R.string.login_title),
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleLarge
+        )
         Spacer(Modifier.height(Dimen.Space.Title))
         TextField(
             value = state.email,
@@ -110,16 +112,5 @@ private fun EnteringUi(
         Button(onClick = { actionReceiver.receive(LoginAction.UserSubmitted) }) {
             Text(stringResource(id = R.string.login_submit))
         }
-    }
-}
-
-@Composable
-private fun LoggedInUi(name: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .then(modifier), contentAlignment = Alignment.Center
-    ) {
-        Text("Hello $name")
     }
 }

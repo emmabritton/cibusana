@@ -36,6 +36,7 @@ open class RuntimeKernel<S: State>(
     protected val stateChangeLock = Any()
 
     init {
+        @Suppress("LeakingThis") //I'm pretty sure this is fine
         commandHandler.actionReceiver = this
     }
 

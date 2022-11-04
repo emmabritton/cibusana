@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.ui
+package app.emmabritton.cibusana.flow.welcome
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.emmabritton.cibusana.R
-import app.emmabritton.cibusana.system.welcome.WelcomeAction
 import app.emmabritton.cibusana.ui.theme.Dimen
 import app.emmabritton.system.ActionReceiver
 

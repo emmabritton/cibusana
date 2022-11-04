@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.ui
+package app.emmabritton.cibusana.flow.register
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -12,15 +12,16 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import app.emmabritton.cibusana.R
-import app.emmabritton.cibusana.system.login.*
-import app.emmabritton.cibusana.system.register.RegisterAction
-import app.emmabritton.cibusana.system.register.RegisterState
 import app.emmabritton.cibusana.ui.theme.Dimen
 import app.emmabritton.cibusana.ui.theme.Dimen.Padding
 import app.emmabritton.system.ActionReceiver
 
 @Composable
-fun RegisterUi(state: RegisterState, actionReceiver: ActionReceiver, modifier: Modifier = Modifier) {
+fun RegisterUi(
+    state: RegisterState,
+    actionReceiver: ActionReceiver,
+    modifier: Modifier = Modifier
+) {
     when (state) {
         is RegisterState.Entering -> EnteringUi(
             state = state,
@@ -29,7 +30,6 @@ fun RegisterUi(state: RegisterState, actionReceiver: ActionReceiver, modifier: M
         )
         is RegisterState.Error -> ErrorUi(state = state, actionReceiver = actionReceiver, modifier)
         is RegisterState.Loading -> LoadingUi(modifier)
-        is RegisterState.Registered -> RegisteredUi(name = state.name, modifier)
     }
 }
 
@@ -77,7 +77,11 @@ private fun EnteringUi(
             .then(modifier),
         horizontalAlignment = Alignment.End
     ) {
-        Text(stringResource(id = R.string.register_title), modifier = Modifier.fillMaxWidth(), style = MaterialTheme.typography.titleLarge)
+        Text(
+            stringResource(id = R.string.register_title),
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.titleLarge
+        )
         Spacer(Modifier.height(Dimen.Space.Title))
         TextField(
             value = state.name,
@@ -118,7 +122,7 @@ private fun EnteringUi(
                 )
             },
             label = { Text(stringResource(id = R.string.register_password)) },
-            placeholder = {Text(stringResource(id = R.string.register_password_placeholder))},
+            placeholder = { Text(stringResource(id = R.string.register_password_placeholder)) },
             keyboardActions = KeyboardActions(onDone = { actionReceiver.receive(RegisterAction.UserSubmitted) }),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -130,16 +134,5 @@ private fun EnteringUi(
         Button(onClick = { actionReceiver.receive(RegisterAction.UserSubmitted) }) {
             Text(stringResource(id = R.string.register_submit))
         }
-    }
-}
-
-@Composable
-private fun RegisteredUi(name: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .then(modifier), contentAlignment = Alignment.Center
-    ) {
-        Text("Hello $name")
     }
 }

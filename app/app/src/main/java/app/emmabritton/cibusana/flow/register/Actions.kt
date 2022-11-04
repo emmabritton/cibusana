@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.system.register
+package app.emmabritton.cibusana.flow.register
 
 import app.emmabritton.system.Action
 
@@ -13,5 +13,4 @@ sealed class RegisterAction(val stateValidator: (RegisterState) -> Boolean) : Ac
     object UserSubmitted : RegisterAction(enteringOnly)
     object UserClearedError : RegisterAction(errorOnly)
     class Rejected(val reasons: List<Int>) : RegisterAction(loadingOnly)
-    class Accepted(val name: String, val token: String) : RegisterAction(loadingOnly)
 }

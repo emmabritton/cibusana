@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.system.register
+package app.emmabritton.cibusana.flow.register
 
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
@@ -26,7 +26,4 @@ sealed class RegisterState(override val config: UiStateConfig) : UiState {
     data class Error(val message: String, val details: Entering) : RegisterState(UiStateConfig.tempScreen()) {
         fun toEntering() = details
     }
-
-    data class Registered(val name: String, val token: String) :
-        RegisterState(UiStateConfig.originScreen())
 }
