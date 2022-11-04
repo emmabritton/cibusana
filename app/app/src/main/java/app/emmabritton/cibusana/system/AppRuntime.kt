@@ -7,7 +7,13 @@ import app.emmabritton.system.*
 typealias AppEffect = Effect<AppState>
 
 val androidMainThreadMarshaller: Marshaller =
-    { method: () -> Unit -> Handler(Looper.getMainLooper()).post { method() } }
+    { method: () -> Unit ->
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            method()
+        } else {
+            Handler(Looper.getMainLooper()).post { method() }
+        }
+    }
 
 class Runtime(
     marshaller: Marshaller = androidMainThreadMarshaller,
