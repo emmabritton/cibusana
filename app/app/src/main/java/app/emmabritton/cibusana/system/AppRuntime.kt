@@ -32,11 +32,19 @@ class Runtime(
         super.receive(action)
     }
 
+    /**
+     * Returns true if runtime has handled back pressed
+     */
     fun goBack(): Boolean {
-        return state.uiState.previousState?.let {
-            receive(GoToState(state, it))
-            true
-        } ?: false
+        synchronized(stateChangeLock) {
+            val previousState = state.uiState.previousState
+            val isFirstScreen = state.uiState.isFirstScreen
+
+            return if (previousState != null) {
+                receive(GoToState(state, previousState))
+                true
+            } else !isFirstScreen
+        }
     }
 
     companion object {

@@ -52,7 +52,7 @@ fun reduceRegisterAction(action: RegisterAction, state: AppState): AppEffect {
             emptyList()
         )
         is RegisterAction.Accepted -> AppEffect(
-            state.copy(uiState = RegisterState.Registered(action.name, action.token, (state.uiState as RegisterState.Loading).details)),
+            state.copy(uiState = RegisterState.Registered(action.name, action.token)),
             emptyList()
         )
     }

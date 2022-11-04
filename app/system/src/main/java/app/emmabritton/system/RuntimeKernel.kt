@@ -33,19 +33,22 @@ open class RuntimeKernel<S: State>(
         @TestOnly
         set
 
+    protected val stateChangeLock = Any()
+
     init {
         commandHandler.actionReceiver = this
     }
 
-    @Synchronized
     override fun receive(action: Action) {
-        runOnMainThread {
-            val effect = reduce(action, state)
-            state = effect.newState
-            for (command in effect.commands) {
-                commandHandler.add(command)
+        synchronized(stateChangeLock) {
+            runOnMainThread {
+                val effect = reduce(action, state)
+                state = effect.newState
+                for (command in effect.commands) {
+                    commandHandler.add(command)
+                }
+                render(state)
             }
-            render(state)
         }
     }
 }

@@ -47,7 +47,7 @@ fun reduceLoginAction(action: LoginAction, state: AppState): AppEffect {
             emptyList()
         )
         is LoginAction.Accepted -> AppEffect(
-            state.copy(uiState = LoginState.LoggedIn(action.name, action.token, (state.uiState as LoginState.Loading).details)),
+            state.copy(uiState = LoginState.LoggedIn(action.name, action.token)),
             emptyList()
         )
     }
