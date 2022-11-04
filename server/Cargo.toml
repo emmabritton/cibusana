@@ -8,7 +8,7 @@ publish = false
 license-file = "LICENSE"
 
 [dependencies]
-anyhow = "1.0.65"
+anyhow = "1.0.66"
 axum = "0.5.16"
 rustls = "0.20.6"
 serde = "1.0.145"
@@ -18,7 +18,7 @@ tokio = { version = "1.0", features = ["full"] }
 log = "0.4.17"
 uuid = { version = "1.1.2", features = ["v4", "fast-rng", "serde"] }
 chrono = { version = "0.4.22", features = ["serde"] }
-simple_logger = { version = "2.3.0", features = ["timestamps"] }
+simple_logger = { version = "4.0.0", features = ["timestamps"] }
 scrypt = "0.10.0"
 password-hash = "0.4.2"
 strum = { version = "0.24", features = ["derive"] }
