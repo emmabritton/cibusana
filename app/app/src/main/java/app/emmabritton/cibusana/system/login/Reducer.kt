@@ -3,6 +3,7 @@ package app.emmabritton.cibusana.system.login
 import app.emmabritton.cibusana.system.AppEffect
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.InvalidState
+import app.emmabritton.cibusana.system.register.RegisterState
 
 fun reduceLoginAction(action: LoginAction, state: AppState): AppEffect {
     if (state.uiState !is LoginState) {
@@ -46,7 +47,7 @@ fun reduceLoginAction(action: LoginAction, state: AppState): AppEffect {
             emptyList()
         )
         is LoginAction.Accepted -> AppEffect(
-            state.copy(uiState = LoginState.LoggedIn(action.name, action.token)),
+            state.copy(uiState = LoginState.LoggedIn(action.name, action.token, (state.uiState as LoginState.Loading).details)),
             emptyList()
         )
     }
