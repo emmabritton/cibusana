@@ -3,7 +3,7 @@ package app.emmabritton.cibusana
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.LoginState
-import app.emmabritton.cibusana.system.reduce
+import app.emmabritton.cibusana.flow.reduce
 import org.junit.Test
 import kotlin.test.assertEquals
 

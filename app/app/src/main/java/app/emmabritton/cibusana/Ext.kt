@@ -1,6 +1,6 @@
 package app.emmabritton.cibusana
 
-import app.emmabritton.cibusana.data.network.BadRequestException
+import app.emmabritton.cibusana.network.network.BadRequestException
 
 fun Throwable.errorCodes(): List<Int> {
     return if (this is BadRequestException) {

@@ -1,7 +1,7 @@
 package app.emmabritton.cibusana
 
-import app.emmabritton.cibusana.data.DI_URL
-import app.emmabritton.cibusana.data.dataModule
+import app.emmabritton.cibusana.network.DI_URL
+import app.emmabritton.cibusana.network.dataModule
 import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.LoginState
 import app.emmabritton.cibusana.system.AppState

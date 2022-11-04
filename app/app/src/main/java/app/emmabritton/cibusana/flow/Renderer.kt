@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.system
+package app.emmabritton.cibusana.flow
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -14,7 +14,11 @@ import app.emmabritton.cibusana.flow.welcome.WelcomeState
 import app.emmabritton.cibusana.flow.home.HomeUi
 import app.emmabritton.cibusana.flow.login.LoginUi
 import app.emmabritton.cibusana.flow.register.RegisterUi
+import app.emmabritton.cibusana.flow.splash.SplashState
+import app.emmabritton.cibusana.flow.splash.SplashUi
 import app.emmabritton.cibusana.flow.welcome.WelcomeUi
+import app.emmabritton.cibusana.system.AppState
+import app.emmabritton.cibusana.system.UnknownUiState
 import app.emmabritton.cibusana.ui.theme.Dimen
 import app.emmabritton.system.ActionReceiver
 
@@ -43,6 +47,7 @@ fun Render(state: AppState, actionReceiver: ActionReceiver, modifier: Modifier =
                     uiState = state.uiState,
                     actionReceiver = actionReceiver
                 )
+                is SplashState -> SplashUi()
                 else -> actionReceiver.receive(UnknownUiState(state.uiState.javaClass.simpleName))
             }
         }

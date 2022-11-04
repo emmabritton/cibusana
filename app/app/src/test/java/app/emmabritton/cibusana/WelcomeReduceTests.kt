@@ -2,7 +2,7 @@ package app.emmabritton.cibusana
 
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.flow.login.LoginState
-import app.emmabritton.cibusana.system.reduce
+import app.emmabritton.cibusana.flow.reduce
 import app.emmabritton.cibusana.flow.register.RegisterState
 import app.emmabritton.cibusana.flow.welcome.WelcomeAction
 import app.emmabritton.cibusana.flow.welcome.WelcomeState

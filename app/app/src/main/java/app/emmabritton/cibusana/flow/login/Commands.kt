@@ -1,9 +1,9 @@
 package app.emmabritton.cibusana.flow.login
 
-import app.emmabritton.cibusana.data.UserController
 import app.emmabritton.cibusana.errorCodes
-import app.emmabritton.cibusana.models.User
-import app.emmabritton.cibusana.system.GlobalAction
+import app.emmabritton.cibusana.flow.common.CommonAction
+import app.emmabritton.cibusana.persist.UserController
+import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.ActionReceiver
 import app.emmabritton.system.Command
 import org.koin.java.KoinJavaComponent.inject
@@ -15,7 +15,9 @@ class SubmitUserLogin(private val email: String, private val password: String) :
         val result = userController.login(email, password)
 
         result.onSuccess {
-            actionReceiver.receive(GlobalAction.LoggedIn(User(it.name, it.token)))
+            val user = User(it.name, it.token)
+            userController.user = user
+            actionReceiver.receive(CommonAction.LoggedIn(user))
         }
 
         result.onFailure { ex->

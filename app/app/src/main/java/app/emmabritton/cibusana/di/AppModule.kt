@@ -1,7 +1,7 @@
 package app.emmabritton.cibusana.di
 
-import app.emmabritton.cibusana.data.DI_URL
-import app.emmabritton.cibusana.data.Logger
+import app.emmabritton.cibusana.network.DI_URL
+import app.emmabritton.cibusana.network.Logger
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named

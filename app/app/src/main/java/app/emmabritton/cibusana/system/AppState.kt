@@ -1,7 +1,8 @@
 package app.emmabritton.cibusana.system
 
+import app.emmabritton.cibusana.flow.splash.SplashState
 import app.emmabritton.cibusana.flow.welcome.WelcomeState
-import app.emmabritton.cibusana.models.User
+import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.State
 
 data class AppState(
@@ -20,8 +21,8 @@ data class AppState(
 
     companion object {
         fun init(): AppState {
-            val uiState = WelcomeState
-            return AppState(null, uiState, listOf(uiState), null)
+            val uiState = SplashState
+            return AppState(null, uiState, emptyList(), null)
         }
     }
 }

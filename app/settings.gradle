@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 rootProject.name = "Cibusana"
 include ':app'
 include ':system'
-include ':data'
+include ':network'
+include ':persist'

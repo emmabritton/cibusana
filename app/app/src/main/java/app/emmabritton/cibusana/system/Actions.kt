@@ -1,6 +1,6 @@
 package app.emmabritton.cibusana.system
 
-import app.emmabritton.cibusana.models.User
+import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.Action
 
 class InvalidState(msg: String) :
@@ -15,9 +15,4 @@ class UnknownUiState(private val name: String) : Action {
 
 class GoBack(val state: UiState) : Action {
     override fun describe() = "GoToState(${state.javaClass.simpleName})"
-}
-
-sealed class GlobalAction : Action {
-    object ServerRejectedToken : GlobalAction()
-    class LoggedIn(val user: User) : GlobalAction()
 }

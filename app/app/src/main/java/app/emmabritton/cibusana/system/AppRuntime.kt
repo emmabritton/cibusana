@@ -2,6 +2,7 @@ package app.emmabritton.cibusana.system
 
 import android.os.Handler
 import android.os.Looper
+import app.emmabritton.cibusana.flow.reduce
 import app.emmabritton.system.*
 import timber.log.Timber
 
@@ -27,7 +28,6 @@ class Runtime(
     commandHandler,
     AppState.init()
 ) {
-
     override fun receive(action: Action) {
         Timber.tag(TAG).d("Received ${action.describe()} during $state")
         if (action is GoBack) {
