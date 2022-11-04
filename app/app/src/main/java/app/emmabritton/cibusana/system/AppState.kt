@@ -25,9 +25,9 @@ data class AppState(
 }
 
 
-open class UiState(
+interface UiState {
     val config: UiStateConfig
-)
+}
 
 data class UiStateConfig(
     /**

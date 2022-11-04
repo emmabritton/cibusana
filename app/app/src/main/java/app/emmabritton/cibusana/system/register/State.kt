@@ -3,7 +3,7 @@ package app.emmabritton.cibusana.system.register
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
 
-sealed class RegisterState(config: UiStateConfig) : UiState(config) {
+sealed class RegisterState(override val config: UiStateConfig) : UiState {
     data class Entering(
         val email: String,
         val password: String,
