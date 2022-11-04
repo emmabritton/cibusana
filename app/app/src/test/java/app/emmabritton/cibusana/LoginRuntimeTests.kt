@@ -2,10 +2,8 @@ package app.emmabritton.cibusana
 
 import app.emmabritton.cibusana.data.DI_URL
 import app.emmabritton.cibusana.data.dataModule
-import app.emmabritton.cibusana.system.login.LoginState
-import app.emmabritton.cibusana.system.login.UserSubmittedLogin
-import app.emmabritton.cibusana.system.login.UserUpdatedLoginEmail
-import app.emmabritton.cibusana.system.login.UserUpdatedLoginPassword
+import app.emmabritton.cibusana.system.AppState
+import app.emmabritton.cibusana.system.login.*
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -46,15 +44,16 @@ class LoginRuntimeTests : KoinTest {
         }
 
         val runtime = createTestRuntime()
+        runtime.state = AppState.init().copy(uiState = LoginState.Entering.init())
 
-        runtime.receive(UserUpdatedLoginEmail("test@test.com"))
-        runtime.receive(UserUpdatedLoginPassword("testtest"))
+        runtime.receive(LoginAction.UserUpdatedEmail("test@test.com"))
+        runtime.receive(LoginAction.UserUpdatedPassword("testtest"))
 
-        runtime.receive(UserSubmittedLogin)
+        runtime.receive(LoginAction.UserSubmitted)
 
         runtime.assertNoGlobalError()
 
-        val error = runtime.assertLoginState(LoginState.Error::class.java)
+        val error = runtime.assertUiState(LoginState.Error::class.java)
         assertEquals(error.message, "103")
     }
 
@@ -72,14 +71,16 @@ class LoginRuntimeTests : KoinTest {
 
         val runtime = createTestRuntime()
 
-        runtime.receive(UserUpdatedLoginEmail("test@test.com"))
-        runtime.receive(UserUpdatedLoginPassword("testtest"))
+        runtime.state = AppState.init().copy(uiState = LoginState.Entering.init())
 
-        runtime.receive(UserSubmittedLogin)
+        runtime.receive(LoginAction.UserUpdatedEmail("test@test.com"))
+        runtime.receive(LoginAction.UserUpdatedPassword("testtest"))
+
+        runtime.receive(LoginAction.UserSubmitted)
 
         runtime.assertNoGlobalError()
 
-        val loggedIn = runtime.assertLoginState(LoginState.LoggedIn::class.java)
+        val loggedIn = runtime.assertUiState(LoginState.LoggedIn::class.java)
         assertEquals(loggedIn.name, "Test")
         assertEquals(loggedIn.token, "token-value")
     }

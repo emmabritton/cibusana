@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">Cibusana</string>
-    <string name="title_activity_login">Login Activity</string>
+
+    <string name="welcome_login">Login</string>
+    <string name="welcome_register">Register</string>
+
+    <string name="login_title">Login into Cibusana</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_submit">Login</string>
+
+    <string name="register_title">Register with Cibusana</string>
+    <string name="register_email">Email</string>
+    <string name="register_password">Password</string>
+    <string name="register_name">Name</string>
+    <string name="register_submit">Register</string>
+    <string name="register_password_placeholder">Min 8 characters</string>
 </resources>

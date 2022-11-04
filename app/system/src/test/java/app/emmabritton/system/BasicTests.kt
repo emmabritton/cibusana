@@ -18,7 +18,7 @@ class BasicTests {
 
         val kernel = createTestRuntime(reduce, TestState(false))
         kernel.receive(Login())
-        assert(kernel.state().isLoggedIn)
+        assert(kernel.state.isLoggedIn)
     }
 
     @Test
@@ -43,9 +43,9 @@ class BasicTests {
         val kernel = createTestRuntime(reduce, TestState(0))
 
         kernel.receive(TestSubmitIncCount())
-        assertEquals(kernel.state().count, 1)
+        assertEquals(kernel.state.count, 1)
 
         kernel.receive(TestSubmitIncCount())
-        assertEquals(kernel.state().count, 2)
+        assertEquals(kernel.state.count, 2)
     }
 }

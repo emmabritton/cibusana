@@ -7,5 +7,5 @@ fun <S : State> createTestRuntime(
     initState: S,
     render: (S) -> Unit = {}
 ): RuntimeKernel<S> {
-    return RuntimeKernel<S>(runOnMainThread, reduce, render, ImmediateCommandHandler(), initState)
+    return RuntimeKernel(runOnMainThread, reduce, render, ImmediateCommandHandler(), initState)
 }

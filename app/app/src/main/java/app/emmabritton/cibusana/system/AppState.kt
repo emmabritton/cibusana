@@ -1,16 +1,18 @@
 package app.emmabritton.cibusana.system
 
-import app.emmabritton.cibusana.system.login.LoginState
+import app.emmabritton.cibusana.system.welcome.WelcomeState
 import app.emmabritton.system.State
 
 data class AppState(
     val error: String?,
-    val loginState: LoginState,
+    val uiState: UiState,
 ) : State {
     companion object {
         fun init(): AppState {
-            return AppState(null, LoginState.Entering("", ""))
+            return AppState(null, WelcomeState)
         }
     }
 }
+
+interface UiState
 

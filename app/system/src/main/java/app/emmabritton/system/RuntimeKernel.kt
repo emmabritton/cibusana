@@ -27,14 +27,15 @@ open class RuntimeKernel<S: State>(
     private val commandHandler: CommandHandler,
     initState: S
 ) : ActionReceiver {
-    private var state = initState
+    var state = initState
+        @TestOnly
+        get
+        @TestOnly
+        set
 
     init {
         commandHandler.actionReceiver = this
     }
-
-    @TestOnly
-    fun state(): S = state
 
     @Synchronized
     override fun receive(action: Action) {

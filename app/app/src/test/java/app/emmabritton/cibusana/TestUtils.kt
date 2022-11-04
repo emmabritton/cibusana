@@ -3,6 +3,7 @@ package app.emmabritton.cibusana
 import app.emmabritton.cibusana.data.Logger
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.Runtime
+import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.login.LoginState
 import app.emmabritton.system.ImmediateCommandHandler
 import okhttp3.Interceptor
@@ -42,17 +43,17 @@ fun AppState.assertNoGlobalError(msg: String? = null) {
 }
 
 fun Runtime.assertNoGlobalError(msg: String? = null) {
-    this.state().assertNoGlobalError(msg)
+    this.state.assertNoGlobalError(msg)
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <S : LoginState> AppState.assertLoginState(type: Class<S>, prefix: String? = null): S {
-    assert(this.loginState.javaClass == type) {
-        "${prefix ?: ""}Login state should have been ${type.simpleName} was ${this.loginState.javaClass.simpleName}"
+fun <S : UiState> AppState.assertUiState(type: Class<S>, prefix: String? = null): S {
+    assert(this.uiState.javaClass == type) {
+        "${prefix ?: ""}UI state should have been ${type.simpleName} was ${this.uiState.javaClass.simpleName}"
     }
-    return this.loginState as S
+    return this.uiState as S
 }
 
-fun <S : LoginState> Runtime.assertLoginState(type: Class<S>, prefix: String? = null): S {
-    return this.state().assertLoginState(type, prefix)
+fun <S : UiState> Runtime.assertUiState(type: Class<S>, prefix: String? = null): S {
+    return this.state.assertUiState(type, prefix)
 }
