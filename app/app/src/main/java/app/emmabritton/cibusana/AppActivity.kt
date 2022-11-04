@@ -26,7 +26,7 @@ class AppActivity : ComponentActivity() {
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (!runtime.goBack()) {
+                if (!runtime.onBackPressed()) {
                     finish()
                 }
             }

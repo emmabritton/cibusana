@@ -15,7 +15,6 @@ fun reduce(action: Action, state: AppState): AppEffect {
         is LoginAction -> reduceLoginAction(action, state)
         is WelcomeAction -> reduceWelcomeAction(action, state)
         is RegisterAction -> reduceRegisterAction(action, state)
-        is GoToState -> action.toEffect()
         is CommandException -> {
             Timber.e(action.cause, action.name)
             AppEffect(

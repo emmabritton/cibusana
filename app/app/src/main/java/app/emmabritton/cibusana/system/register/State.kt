@@ -1,14 +1,15 @@
 package app.emmabritton.cibusana.system.register
 
 import app.emmabritton.cibusana.system.UiState
+import app.emmabritton.cibusana.system.UiStateConfig
 
-sealed class RegisterState(previousState: UiState?, isFirstScreen: Boolean) : UiState(previousState, isFirstScreen) {
+sealed class RegisterState(config: UiStateConfig) : UiState(config) {
     data class Entering(
         val email: String,
         val password: String,
         val name: String,
         private val lastScreen: UiState?
-    ) : RegisterState(lastScreen, false) {
+    ) : RegisterState(UiStateConfig.generalScreen()) {
         fun toLoading() = Loading(this)
 
         companion object {
@@ -18,14 +19,14 @@ sealed class RegisterState(previousState: UiState?, isFirstScreen: Boolean) : Ui
         }
     }
 
-    data class Loading(val details: Entering) : RegisterState(null, false) {
+    data class Loading(val details: Entering) : RegisterState(UiStateConfig.loadingScreen()) {
         fun toError(msg: String) = Error(msg, details)
     }
 
-    data class Error(val message: String, val details: Entering) : RegisterState(details, false) {
+    data class Error(val message: String, val details: Entering) : RegisterState(UiStateConfig.tempScreen()) {
         fun toEntering() = details
     }
 
     data class Registered(val name: String, val token: String) :
-        RegisterState(null, true)
+        RegisterState(UiStateConfig.originScreen())
 }
