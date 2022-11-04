@@ -11,3 +11,7 @@ class UnknownAction(msg: String) :
 class UnknownUiState(private val name: String) : Action {
     fun toEffect() = AppEffect(AppState.init().copy(error = "Unknown UI state: $name"), emptyList())
 }
+
+class GoBack(val state: UiState) : Action {
+    override fun describe() ="GoToState(${state.javaClass.simpleName})"
+}
