@@ -2,9 +2,10 @@ package app.emmabritton.cibusana.persist
 
 import org.koin.dsl.module
 
+@Suppress("USELESS_CAST")
 val persistModule = module {
     single {
-        Prefs(get(), get())
+        AndroidPrefs(get(), get()) as Prefs
     }
 
     single {

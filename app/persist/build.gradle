@@ -23,5 +23,8 @@ android {
 
 dependencies {
     implementation project(":network")
-    implementation "io.insert-koin:koin-core:$koinVersion"
+
+    implementation "io.insert-koin:koin-core:$koinVer"
+
+    testImplementation "junit:junit:$junitVer"
 }

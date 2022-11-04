@@ -10,7 +10,7 @@ java {
 }
 
 dependencies {
-    implementation "io.insert-koin:koin-core:$koinVersion"
+    implementation "io.insert-koin:koin-core:$koinVer"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofitVer"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofitVer"
@@ -18,4 +18,6 @@ dependencies {
 
     ksp "com.squareup.moshi:moshi-kotlin-codegen:$moshiVer"
     implementation "com.squareup.moshi:moshi:$moshiVer"
+
+    testImplementation "junit:junit:$junitVer"
 }

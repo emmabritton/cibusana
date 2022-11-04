@@ -11,11 +11,9 @@ import org.junit.Test
 class WelcomeReduceTests {
     @Test
     fun `check Welcome login button`() {
-        val state = AppState.init()
+        val state = AppState.init().copy(uiState = WelcomeState)
 
         state.assertNoGlobalError()
-
-        state.assertUiState(WelcomeState::class.java)
 
         val effect = reduce(WelcomeAction.UserPressedLogin, state)
 
@@ -24,11 +22,9 @@ class WelcomeReduceTests {
 
     @Test
     fun `check Welcome register button`() {
-        val state = AppState.init()
+        val state = AppState.init().copy(uiState = WelcomeState)
 
         state.assertNoGlobalError()
-
-        state.assertUiState(WelcomeState::class.java)
 
         val effect = reduce(WelcomeAction.UserPressedRegister, state)
 

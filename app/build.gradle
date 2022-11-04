@@ -3,9 +3,10 @@ buildscript {
         retrofitVer = "2.9.0"
         moshiVer = "1.14.0"
         okhttpVer = "4.10.0"
-        koinVersion= "3.2.2"
-        koinAndroidVersion= "3.3.0"
-        composeVersion = '1.3.0'
+        koinVer= "3.2.2"
+        koinAndroidVer= "3.3.0"
+        composeVer = '1.3.0'
+        junitVer = '4.13.2'
 
         compileVer = 33
         minVer = 32

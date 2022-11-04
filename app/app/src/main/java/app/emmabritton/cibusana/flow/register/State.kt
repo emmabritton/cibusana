@@ -7,14 +7,13 @@ sealed class RegisterState(override val config: UiStateConfig) : UiState {
     data class Entering(
         val email: String,
         val password: String,
-        val name: String,
-        private val lastScreen: UiState?
+        val name: String
     ) : RegisterState(UiStateConfig.generalScreen()) {
         fun toLoading() = Loading(this)
 
         companion object {
-            fun init(previousState: UiState?): Entering {
-                return Entering("", "", "", previousState)
+            fun init(): Entering {
+                return Entering("", "", "")
             }
         }
     }

@@ -4,10 +4,14 @@ import android.content.Context
 import app.emmabritton.cibusana.network.Logger
 import app.emmabritton.cibusana.persist.models.User
 
-class Prefs(context: Context, private val logger: Logger) {
+interface Prefs {
+    var user: User?
+}
+
+class AndroidPrefs(context: Context, private val logger: Logger) : Prefs {
     private val prefs = context.getSharedPreferences("common", Context.MODE_PRIVATE)
 
-    var user: User?
+    override var user: User?
         get() {
             return if (prefs.contains(KEY_USER_NAME) && prefs.contains(KEY_USER_TOKEN)) {
                 User(prefs.getString(KEY_USER_NAME, "")!!, prefs.getString(KEY_USER_TOKEN, "")!!)

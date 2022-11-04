@@ -1,9 +1,6 @@
 package app.emmabritton.cibusana.persist
 
 import app.emmabritton.cibusana.network.Api
-import app.emmabritton.cibusana.network.Logger
-import app.emmabritton.cibusana.network.models.*
-import app.emmabritton.cibusana.network.network.*
 import app.emmabritton.cibusana.persist.models.User
 
 class UserController(private val api: Api, private val prefs: Prefs) {

@@ -1,16 +1,16 @@
 package app.emmabritton.cibusana
 
+import app.emmabritton.cibusana.flow.splash.SplashState
 import app.emmabritton.cibusana.system.AppState
-import app.emmabritton.cibusana.flow.welcome.WelcomeState
 import org.junit.Test
 
 class AppReduceTests {
     @Test
-    fun `check init state is Welcome`() {
+    fun `check init state is Splash`() {
         val state = AppState.init()
 
         state.assertNoGlobalError()
 
-        state.assertUiState(WelcomeState::class.java)
+        state.assertUiState(SplashState::class.java)
     }
 }
