@@ -2,8 +2,9 @@
 name = "calories_checker"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+publish = false
+authors = ["Emma Britton <emmabritton@pm.me>"]
+description = "Checks calorie calc vs calorie value on food"
 
 [dependencies]
 sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid"] }
@@ -13,3 +14,4 @@ tokio = { version = "1.0", features = ["full"] }
 uuid = { version = "1.1.2", features = ["v4", "fast-rng", "serde"] }
 chrono = { version = "0.4.22", features = ["serde"] }
 log = "0.4.17"
+dotenvy = "0.15.6"

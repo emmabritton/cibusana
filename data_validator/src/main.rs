@@ -1,14 +1,15 @@
 use anyhow::Result;
+use dotenvy::{dotenv, var};
 use log::LevelFilter;
 use sqlx::{ConnectOptions, Pool, Postgres};
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use uuid::Uuid;
 
-const DB_URI: &str = "postgresql://foodserver:5h64jyurjteTRH_thtrgre@db-postgresql-lon1-96106-do-user-3581367-0.b.db.ondigitalocean.com:25060/journal?sslmode=require";
-
 #[tokio::main]
 async fn main() -> Result<()> {
-    let db = connect_database(DB_URI).await?;
+    dotenv().ok();
+
+    let db = connect_database(&var("DB_URI").unwrap()).await?;
 
     let mut conn = db.acquire().await?;
     let foods: Vec<Food> = sqlx::query_as(&format!(
