@@ -9,6 +9,9 @@ import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
+/**
+ * Clear user data from storage
+ */
 class LogOutUser : Command {
     private val userController: UserController by inject(UserController::class.java)
 
@@ -17,6 +20,9 @@ class LogOutUser : Command {
     }
 }
 
+/**
+ * Load user data from storage
+ */
 class LoadUserData : Command {
     private val userController: UserController by inject(UserController::class.java)
 
@@ -30,6 +36,9 @@ class LoadUserData : Command {
     }
 }
 
+/**
+ * Load all data from server into memory (less than 1MB)
+ */
 class PreLoadCacheData : Command {
     private val dataController: DataController by inject(DataController::class.java)
 

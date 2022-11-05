@@ -8,6 +8,9 @@ import app.emmabritton.system.ActionReceiver
 import app.emmabritton.system.Command
 import org.koin.java.KoinJavaComponent.inject
 
+/**
+ * Send name, email and password to server to register
+ */
 class SubmitUserRegister(private val email: String, private val password: String, private val name: String) : Command {
     private val userController: UserController by inject(UserController::class.java)
 
