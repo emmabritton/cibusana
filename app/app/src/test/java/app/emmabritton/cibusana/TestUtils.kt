@@ -29,7 +29,7 @@ val testModule = module {
                 println("E: $msg")
             }
 
-            override fun e(exception: Exception, msg: String) {
+            override fun e(exception: Throwable, msg: String) {
                 println("E: $msg: ${exception.javaClass.simpleName}")
                 exception.printStackTrace()
             }

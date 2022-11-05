@@ -29,7 +29,7 @@ val appModule = module {
                 Timber.e(msg)
             }
 
-            override fun e(exception: Exception, msg: String) {
+            override fun e(exception: Throwable, msg: String) {
                 Timber.e(exception, msg)
             }
         } as Logger

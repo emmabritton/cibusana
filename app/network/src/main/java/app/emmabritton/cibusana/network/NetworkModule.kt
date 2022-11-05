@@ -20,12 +20,17 @@ const val DI_CACHE_FILE = "cache_dir.file"
 private val internalNetworkModule = module {
 
     single {
+        val file = getOrNull<File>(named(DI_CACHE_FILE))
         val interceptor: Interceptor = get()
         OkHttpClient.Builder()
-            .cache(Cache(
-                directory = File(get<File>(named(DI_CACHE_FILE)), "http_cache"),
-                maxSize = 50L * 1024L * 1024L // 50 MiB
-            ))
+            .apply {
+                if (file != null) {
+                    this.cache(Cache(
+                        directory = File(get<File>(named(DI_CACHE_FILE)), "http_cache"),
+                        maxSize = 50L * 1024L * 1024L // 50 MiB
+                    ))
+                }
+            }
             .addInterceptor(interceptor)
             .build()
     }
