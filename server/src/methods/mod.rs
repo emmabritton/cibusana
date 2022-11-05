@@ -1,7 +1,7 @@
 use crate::models::wrappers::{PageWrapper, ResponseError, ResponseWrapper};
 use anyhow::Result;
 use axum::body::BoxBody;
-use axum::http::{Response, StatusCode};
+use axum::http::{HeaderMap, HeaderValue, Response, StatusCode};
 use axum::response::IntoResponse;
 use axum::{Extension, Json};
 use sqlx::pool::PoolConnection;
@@ -63,6 +63,15 @@ fn error_resp(error_codes: Vec<i64>) -> Response<BoxBody> {
         ))),
     )
         .into_response()
+}
+
+fn success_cached_resp<T>(content: T) -> Response<BoxBody>
+    where
+        (StatusCode, HeaderMap,Json<ResponseWrapper<T>>): IntoResponse,
+{
+    let mut headers = HeaderMap::new();
+    headers.insert("Cache-Control", HeaderValue::from_static("max-age=18000"));
+    (StatusCode::OK, headers,Json(ResponseWrapper::content(content))).into_response()
 }
 
 fn success_resp<T>(content: T) -> Response<BoxBody>

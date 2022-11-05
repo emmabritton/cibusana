@@ -6,7 +6,7 @@ use std::collections::{HashMap, HashSet};
 use strum::IntoEnumIterator;
 
 use crate::methods::consts::*;
-use crate::methods::{success_resp, ExtDb};
+use crate::methods::{ExtDb, success_cached_resp};
 use crate::utils::AppError;
 
 pub async fn alive() -> impl IntoResponse {
@@ -14,7 +14,7 @@ pub async fn alive() -> impl IntoResponse {
 }
 
 pub async fn cuisines() -> impl IntoResponse {
-    success_resp(
+    success_cached_resp(
         Cuisine::iter()
             .map(|e| e.to_string())
             .collect::<Vec<String>>(),
@@ -22,7 +22,7 @@ pub async fn cuisines() -> impl IntoResponse {
 }
 
 pub async fn meal_times() -> impl IntoResponse {
-    success_resp(
+    success_cached_resp(
         MealTime::iter()
             .map(|e| e.to_string())
             .collect::<Vec<String>>(),
@@ -30,7 +30,7 @@ pub async fn meal_times() -> impl IntoResponse {
 }
 
 pub async fn allergens() -> impl IntoResponse {
-    success_resp(
+    success_cached_resp(
         Allergen::iter()
             .map(|e| e.to_string())
             .collect::<Vec<String>>(),
@@ -38,7 +38,7 @@ pub async fn allergens() -> impl IntoResponse {
 }
 
 pub async fn flags() -> impl IntoResponse {
-    success_resp(Flag::iter().map(|e| e.to_string()).collect::<Vec<String>>())
+    success_cached_resp(Flag::iter().map(|e| e.to_string()).collect::<Vec<String>>())
 }
 
 pub async fn categories() -> Result<impl IntoResponse, AppError> {
@@ -46,7 +46,7 @@ pub async fn categories() -> Result<impl IntoResponse, AppError> {
     for cat in FoodCategory::iter() {
         map.insert(cat, cat.sub_cats());
     }
-    Ok(success_resp(map))
+    Ok(success_cached_resp(map))
 }
 
 pub async fn flavors(Extension(db): ExtDb) -> Result<impl IntoResponse, AppError> {
@@ -54,7 +54,7 @@ pub async fn flavors(Extension(db): ExtDb) -> Result<impl IntoResponse, AppError
     let sql = format!("SELECT {COL_FLAVORS} FROM {TABLE_FOOD}");
     let results: Vec<Vec<String>> = sqlx::query_scalar(&sql).fetch_all(&mut conn).await?;
     let flavors: HashSet<String> = results.into_iter().flatten().collect();
-    Ok(success_resp(flavors))
+    Ok(success_cached_resp(flavors))
 }
 
 pub async fn companies(Extension(db): ExtDb) -> Result<impl IntoResponse, AppError> {
@@ -74,5 +74,5 @@ pub async fn companies(Extension(db): ExtDb) -> Result<impl IntoResponse, AppErr
                 set.insert(range);
             }
         });
-    Ok(success_resp(result))
+    Ok(success_cached_resp(result))
 }
