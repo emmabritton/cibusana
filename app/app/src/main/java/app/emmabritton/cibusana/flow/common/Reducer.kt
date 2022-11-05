@@ -17,6 +17,6 @@ fun reduceCommonAction(action: CommonAction, state: AppState): AppEffect {
                 user = null
             ), listOf(LogOutUser())
         )
-        CommonAction.InitialiseApp -> AppEffect(state, listOf(LoadUserData()))
+        CommonAction.InitialiseApp -> AppEffect(state, listOf(PreLoadCacheData(), LoadUserData()))
     }
 }

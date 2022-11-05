@@ -1,11 +1,11 @@
-package app.emmabritton.cibusana.network.network
+package app.emmabritton.cibusana.network.apis
 
 import app.emmabritton.cibusana.network.models.*
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface UserApi {
+internal interface UserApi {
     @POST("/users/login")
     fun login(@Body request: LoginRequest): Call<ResponseWrapper<LoginResponse>>
 

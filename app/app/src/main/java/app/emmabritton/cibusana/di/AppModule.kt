@@ -1,5 +1,7 @@
 package app.emmabritton.cibusana.di
 
+import android.content.Context
+import app.emmabritton.cibusana.network.DI_CACHE_FILE
 import app.emmabritton.cibusana.network.DI_URL
 import app.emmabritton.cibusana.network.Logger
 import okhttp3.Interceptor
@@ -35,5 +37,9 @@ val appModule = module {
 
     single(named(DI_URL)) {
         "https://cibusana.com"
+    }
+
+    single(named(DI_CACHE_FILE)) {
+        get<Context>().cacheDir
     }
 }

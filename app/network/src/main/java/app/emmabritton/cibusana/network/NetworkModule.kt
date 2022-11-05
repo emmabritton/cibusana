@@ -1,21 +1,31 @@
 package app.emmabritton.cibusana.network
 
-import app.emmabritton.cibusana.network.network.UserApi
+import app.emmabritton.cibusana.network.apis.DataApi
+import app.emmabritton.cibusana.network.apis.FoodApi
+import app.emmabritton.cibusana.network.apis.UserApi
 import com.squareup.moshi.Moshi
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.koin.core.qualifier.named
+import org.koin.dsl.ModuleDeclaration
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.File
 
 const val DI_URL = "url.string"
+const val DI_CACHE_FILE = "cache_dir.file"
 
-val networkModule = module {
+private val internalNetworkModule = module {
 
     single {
         val interceptor: Interceptor = get()
         OkHttpClient.Builder()
+            .cache(Cache(
+                directory = File(get<File>(named(DI_CACHE_FILE)), "http_cache"),
+                maxSize = 50L * 1024L * 1024L // 50 MiB
+            ))
             .addInterceptor(interceptor)
             .build()
     }
@@ -39,6 +49,20 @@ val networkModule = module {
     }
 
     single {
-        Api(get(), get())
+        val retrofit: Retrofit = get()
+        retrofit.create(FoodApi::class.java)
+    }
+
+    single {
+        val retrofit: Retrofit = get()
+        retrofit.create(DataApi::class.java)
+    }
+}
+
+val networkModule = module {
+    includes(internalNetworkModule)
+
+    single {
+        Api(get(), get(), get(), get())
     }
 }

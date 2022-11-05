@@ -1,13 +1,11 @@
-package app.emmabritton.cibusana.network.network
+package app.emmabritton.cibusana.network
 
-import app.emmabritton.cibusana.network.Logger
-import app.emmabritton.cibusana.network.models.LoginRequest
-import app.emmabritton.cibusana.network.models.LoginResponse
+import app.emmabritton.cibusana.network.exceptions.BadRequestException
+import app.emmabritton.cibusana.network.exceptions.EmptyResponseException
+import app.emmabritton.cibusana.network.exceptions.ServerErrorException
 import app.emmabritton.cibusana.network.models.ResponseWrapper
 import retrofit2.Call
-import retrofit2.Response
 import java.io.IOException
-import kotlin.reflect.KFunction1
 
 fun <R> executeRequest(logger: Logger, call: Call<ResponseWrapper<R>>): Result<R> {
     return try {

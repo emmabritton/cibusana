@@ -1,13 +1,16 @@
 package app.emmabritton.cibusana.network
 
-import app.emmabritton.cibusana.network.models.LoginRequest
-import app.emmabritton.cibusana.network.models.LoginResponse
-import app.emmabritton.cibusana.network.models.RegisterRequest
-import app.emmabritton.cibusana.network.models.RegisterResponse
-import app.emmabritton.cibusana.network.network.UserApi
-import app.emmabritton.cibusana.network.network.executeRequest
+import app.emmabritton.cibusana.network.apis.DataApi
+import app.emmabritton.cibusana.network.apis.FoodApi
+import app.emmabritton.cibusana.network.apis.UserApi
+import app.emmabritton.cibusana.network.models.*
 
-class Api(private val userApi: UserApi, private val logger: Logger) {
+class Api internal constructor(
+    private val userApi: UserApi,
+    private val foodApi: FoodApi,
+    private val dataApi: DataApi,
+    private val logger: Logger
+) {
     fun login(email: String, password: String): Result<LoginResponse> {
         val request = LoginRequest(email, password)
 
@@ -19,4 +22,17 @@ class Api(private val userApi: UserApi, private val logger: Logger) {
 
         return executeRequest(logger, userApi.register(request))
     }
+
+    fun searchFood(name: String? = null, page: Int = 0): Result<List<FoodResponse>> {
+        return executeRequest(logger, foodApi.searchFoods(page, name))
+    }
+
+    fun getFlags() = executeRequest(logger, dataApi.getFlags())
+    fun getCategories() = executeRequest(logger, dataApi.getCategories())
+    fun getCuisines() = executeRequest(logger, dataApi.getCuisines())
+    fun getCompanies() = executeRequest(logger, dataApi.getCompanies())
+    fun getMealTimes() = executeRequest(logger, dataApi.getMealTimes())
+    fun getFlavors() = executeRequest(logger, dataApi.getFlavors())
+    fun getAllergens() = executeRequest(logger, dataApi.getAllergens())
+
 }

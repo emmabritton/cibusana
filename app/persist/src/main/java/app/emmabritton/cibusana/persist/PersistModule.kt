@@ -11,4 +11,8 @@ val persistModule = module {
     single {
         UserController(get(), get())
     }
+
+    single {
+        DataController(get(), get())
+    }
 }
