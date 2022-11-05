@@ -6,6 +6,7 @@ import app.emmabritton.cibusana.persist.DataController
 import app.emmabritton.cibusana.persist.Prefs
 import app.emmabritton.cibusana.persist.UserController
 import app.emmabritton.cibusana.persist.models.User
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
@@ -43,6 +44,17 @@ open class RuntimeTest {
                 }
             })
         }
+    }
+
+    fun setupPreloadData() {
+        //has to match order in command PreLoadCacheData
+        server.enqueue(MockResponse().setBody("""{"content":{}""")) //cats
+        server.enqueue(MockResponse().setBody("""{"content":{}""")) //companies
+        server.enqueue(MockResponse().setBody("""{"content":[]""")) //flags
+        server.enqueue(MockResponse().setBody("""{"content":[]""")) //allergens
+        server.enqueue(MockResponse().setBody("""{"content":[]""")) //flavors
+        server.enqueue(MockResponse().setBody("""{"content":[]""")) //cuisines
+        server.enqueue(MockResponse().setBody("""{"content":[]""")) //times
     }
 
     @After

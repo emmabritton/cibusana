@@ -9,8 +9,6 @@ class AppReduceTests {
     fun `check init state is Splash`() {
         val state = AppState.init()
 
-        state.assertNoGlobalError()
-
         state.assertUiState(SplashState::class.java)
     }
 }

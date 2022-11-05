@@ -13,9 +13,4 @@ sealed class CommonAction : Action {
      * A login or register request successfully returned
      */
     class LoggedIn(val user: User) : CommonAction()
-
-    /**
-     * The app has started
-     */
-    object InitialiseApp : CommonAction()
 }

@@ -3,6 +3,10 @@ package app.emmabritton.cibusana
 import app.emmabritton.cibusana.flow.home.HomeState
 import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.LoginState
+import app.emmabritton.cibusana.flow.splash.SplashAction
+import app.emmabritton.cibusana.flow.splash.SplashState
+import app.emmabritton.cibusana.flow.welcome.WelcomeAction
+import app.emmabritton.cibusana.flow.welcome.WelcomeState
 import app.emmabritton.cibusana.persist.Prefs
 import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.cibusana.system.AppState
@@ -10,6 +14,7 @@ import okhttp3.mockwebserver.MockResponse
 import org.junit.Test
 import org.koin.java.KoinJavaComponent.inject
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class LoginRuntimeTests : RuntimeTest() {
     @Test
@@ -58,6 +63,24 @@ class LoginRuntimeTests : RuntimeTest() {
 
     @Test
     fun `test whole app flow from splash to home, with one failed login`() {
+        setupPreloadData()
+        server.enqueue(MockResponse().setBody("""{"content":{"name":"Test2","token":"token-value2"}}"""))
 
+        val runtime = createTestRuntime()
+
+        runtime.assertUiState(SplashState::class.java)
+        runtime.receive(SplashAction.InitialiseApp)
+
+        runtime.assertUiState(WelcomeState::class.java)
+        runtime.receive(WelcomeAction.UserPressedLogin)
+
+        runtime.assertUiState(LoginState.Entering::class.java)
+        runtime.receive(LoginAction.UserUpdatedEmail("test"))
+        runtime.receive(LoginAction.UserUpdatedPassword("test"))
+        runtime.receive(LoginAction.UserSubmitted)
+
+        runtime.assertUiState(HomeState::class.java)
+        assertNotNull(runtime.state.user)
+        assertEquals(runtime.state.user!!.name, "Test2")
     }
 }

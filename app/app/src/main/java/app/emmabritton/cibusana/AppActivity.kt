@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.flow.Render
 import app.emmabritton.cibusana.flow.common.CommonAction
+import app.emmabritton.cibusana.flow.splash.SplashAction
 import app.emmabritton.cibusana.system.Runtime
 import app.emmabritton.cibusana.ui.theme.CibusanaTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,7 @@ class AppActivity : ComponentActivity() {
 
         val uiState = MutableStateFlow(AppState.init())
         val runtime = Runtime { uiState.value = it }
-        runtime.receive(CommonAction.InitialiseApp)
+        runtime.receive(SplashAction.InitialiseApp)
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

@@ -12,8 +12,6 @@ class LoginReduceTests {
     fun `check init Entering state has no text`() {
         val state = AppState.init().copy(uiState = LoginState.Entering.init())
 
-        state.assertNoGlobalError()
-
         val entering = state.assertUiState(LoginState.Entering::class.java)
         assertEquals("", entering.email, "Email should be empty at start of app")
         assertEquals("", entering.password, "Password should be empty at start of app")
@@ -24,8 +22,6 @@ class LoginReduceTests {
         val state = AppState.init().copy(uiState = LoginState.Entering.init())
 
         val effect = reduce(LoginAction.UserUpdatedEmail("t"), state)
-
-        effect.newState.assertNoGlobalError()
 
         val entering = effect.newState.assertUiState(LoginState.Entering::class.java)
         assertEquals("t", entering.email, "Email should now contain the letter")

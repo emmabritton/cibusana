@@ -8,6 +8,8 @@ import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.reduceLoginAction
 import app.emmabritton.cibusana.flow.register.RegisterAction
 import app.emmabritton.cibusana.flow.register.reduceRegisterAction
+import app.emmabritton.cibusana.flow.splash.SplashAction
+import app.emmabritton.cibusana.flow.splash.reduceSplashAction
 import app.emmabritton.cibusana.flow.welcome.WelcomeAction
 import app.emmabritton.cibusana.flow.welcome.WelcomeState
 import app.emmabritton.cibusana.flow.welcome.reduceWelcomeAction
@@ -22,6 +24,7 @@ fun reduce(action: Action, state: AppState): AppEffect {
         is WelcomeAction -> reduceWelcomeAction(action, state)
         is RegisterAction -> reduceRegisterAction(action, state)
         is CommonAction -> reduceCommonAction(action, state)
+        is SplashAction -> reduceSplashAction(action, state)
         is CommandException -> {
             Timber.e(action.cause, action.name)
             AppEffect(

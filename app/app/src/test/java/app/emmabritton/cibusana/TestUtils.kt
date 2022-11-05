@@ -47,6 +47,7 @@ fun Runtime.assertNoGlobalError(msg: String? = null) {
 
 @Suppress("UNCHECKED_CAST")
 fun <S : UiState> AppState.assertUiState(type: Class<S>, prefix: String? = null): S {
+    assertNoGlobalError("Error found for $prefix")
     assert(this.uiState.javaClass == type) {
         "${prefix ?: ""}UI state should have been ${type.simpleName} was ${this.uiState.javaClass.simpleName}"
     }
