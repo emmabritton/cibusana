@@ -1,6 +1,5 @@
 package app.emmabritton.cibusana.system
 
-import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.Action
 
 class InvalidState(msg: String) :

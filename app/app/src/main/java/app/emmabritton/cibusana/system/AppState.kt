@@ -1,7 +1,6 @@
 package app.emmabritton.cibusana.system
 
 import app.emmabritton.cibusana.flow.splash.SplashState
-import app.emmabritton.cibusana.flow.welcome.WelcomeState
 import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.State
 

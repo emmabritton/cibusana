@@ -3,7 +3,6 @@ package app.emmabritton.cibusana.flow.register
 import app.emmabritton.cibusana.system.AppEffect
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.InvalidState
-import app.emmabritton.cibusana.flow.login.SubmitUserLogin
 
 fun reduceRegisterAction(action: RegisterAction, state: AppState): AppEffect {
     if (state.uiState !is RegisterState) {
