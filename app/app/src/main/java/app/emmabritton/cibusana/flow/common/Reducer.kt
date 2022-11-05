@@ -8,7 +8,7 @@ import app.emmabritton.cibusana.system.AppState
 fun reduceCommonAction(action: CommonAction, state: AppState): AppEffect {
     return when (action) {
         is CommonAction.LoggedIn -> AppEffect(
-            state.copy(uiState = HomeState(), user = action.user),
+            state.copy(uiState = HomeState, user = action.user),
             emptyList()
         )
         CommonAction.ServerRejectedToken -> AppEffect(

@@ -15,4 +15,8 @@ val persistModule = module {
     single {
         DataController(get(), get())
     }
+
+    single {
+        FoodController(get())
+    }
 }

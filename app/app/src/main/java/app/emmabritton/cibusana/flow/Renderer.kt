@@ -2,11 +2,14 @@ package app.emmabritton.cibusana.flow
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import app.emmabritton.cibusana.flow.foodList.FoodState
+import app.emmabritton.cibusana.flow.foodList.FoodUi
 import app.emmabritton.cibusana.flow.home.HomeState
 import app.emmabritton.cibusana.flow.login.LoginState
 import app.emmabritton.cibusana.flow.register.RegisterState
@@ -22,6 +25,7 @@ import app.emmabritton.cibusana.system.UnknownUiState
 import app.emmabritton.cibusana.ui.theme.Dimen
 import app.emmabritton.system.ActionReceiver
 
+@ExperimentalMaterial3Api
 @Composable
 fun Render(state: AppState, actionReceiver: ActionReceiver, modifier: Modifier = Modifier) {
     Box(modifier, contentAlignment = Alignment.Center) {
@@ -48,6 +52,7 @@ fun Render(state: AppState, actionReceiver: ActionReceiver, modifier: Modifier =
                     actionReceiver = actionReceiver
                 )
                 is SplashState -> SplashUi()
+                is FoodState -> FoodUi(foodState = state.uiState, actionReceiver = actionReceiver)
                 else -> actionReceiver.receive(UnknownUiState(state.uiState.javaClass.simpleName))
             }
         }

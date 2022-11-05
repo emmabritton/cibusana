@@ -1,6 +1,7 @@
 package app.emmabritton.cibusana.network.apis
 
 import app.emmabritton.cibusana.network.models.FoodResponse
+import app.emmabritton.cibusana.network.models.PageWrapper
 import app.emmabritton.cibusana.network.models.ResponseWrapper
 import retrofit2.Call
 import retrofit2.http.GET
@@ -11,5 +12,5 @@ internal interface FoodApi {
     fun searchFoods(
         @Query("page") page: Int,
         @Query("name") partialName: String?
-    ): Call<ResponseWrapper<List<FoodResponse>>>
+    ): Call<ResponseWrapper<PageWrapper<FoodResponse>>>
 }

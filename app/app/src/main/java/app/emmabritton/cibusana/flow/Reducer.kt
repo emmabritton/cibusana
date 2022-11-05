@@ -2,6 +2,8 @@ package app.emmabritton.cibusana.flow
 
 import app.emmabritton.cibusana.flow.common.CommonAction
 import app.emmabritton.cibusana.flow.common.reduceCommonAction
+import app.emmabritton.cibusana.flow.foodList.FoodAction
+import app.emmabritton.cibusana.flow.foodList.reduceFoodAction
 import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.reduceLoginAction
 import app.emmabritton.cibusana.flow.register.RegisterAction
@@ -25,6 +27,7 @@ fun reduce(action: Action, state: AppState): AppEffect {
         is RegisterAction -> reduceRegisterAction(action, state)
         is CommonAction -> reduceCommonAction(action, state)
         is SplashAction -> reduceSplashAction(action, state)
+        is FoodAction -> reduceFoodAction(action, state)
         is CommandException -> {
             Timber.e(action.cause, action.name)
             AppEffect(

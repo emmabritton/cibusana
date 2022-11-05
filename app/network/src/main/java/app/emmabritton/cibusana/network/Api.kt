@@ -23,8 +23,8 @@ class Api internal constructor(
         return executeRequest(logger, userApi.register(request))
     }
 
-    fun searchFood(name: String? = null, page: Int = 0): Result<List<FoodResponse>> {
-        return executeRequest(logger, foodApi.searchFoods(page, name))
+    fun searchFood(name: String? = null, page: Int = 0): Result<Pair<Int, List<FoodResponse>>> {
+        return executePagedRequest(logger, foodApi.searchFoods(page, name))
     }
 
     fun getFlags() = executeRequest(logger, dataApi.getFlags())
