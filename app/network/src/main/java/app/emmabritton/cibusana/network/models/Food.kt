@@ -6,7 +6,7 @@ import java.util.UUID
 
 @JsonClass(generateAdapter = true)
 data class FoodResponse(
-    val id: String,
+    val id: UUID,
     val name: String,
     @Json(name = "calories_p100")
     val caloriesPer100: Int,

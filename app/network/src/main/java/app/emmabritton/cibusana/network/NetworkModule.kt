@@ -2,6 +2,7 @@ package app.emmabritton.cibusana.network
 
 import app.emmabritton.cibusana.network.apis.DataApi
 import app.emmabritton.cibusana.network.apis.FoodApi
+import app.emmabritton.cibusana.network.apis.MeApi
 import app.emmabritton.cibusana.network.apis.UserApi
 import com.squareup.moshi.Moshi
 import okhttp3.Cache
@@ -12,6 +13,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
+import java.util.*
 
 const val DI_URL = "url.string"
 const val DI_CACHE_FILE = "cache_dir.file"
@@ -36,6 +38,7 @@ private val internalNetworkModule = module {
 
     single {
         Moshi.Builder()
+            .add(UUID::class.java, UuidAdapter())
             .build()
     }
 
@@ -61,12 +64,17 @@ private val internalNetworkModule = module {
         val retrofit: Retrofit = get()
         retrofit.create(DataApi::class.java)
     }
+
+    single {
+        val retrofit: Retrofit = get()
+        retrofit.create(MeApi::class.java)
+    }
 }
 
 val networkModule = module {
     includes(internalNetworkModule)
 
     single {
-        Api(get(), get(), get(), get())
+        Api(get(), get(), get(), get(), get())
     }
 }

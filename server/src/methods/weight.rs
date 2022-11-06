@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use actix_web::{HttpRequest, Responder};
 use actix_web::web::{Json, Query};
 use chrono::NaiveDateTime;
@@ -34,7 +35,11 @@ pub async fn get_weights(
         .fetch_all(&mut conn)
         .await?;
 
-    Ok(success_resp(results))
+    let map : HashMap<NaiveDateTime, f32> = results.into_iter()
+        .map(|(kgs, date)| (date, kgs))
+        .collect();
+
+    Ok(success_resp(map))
 }
 
 pub async fn set_weight(

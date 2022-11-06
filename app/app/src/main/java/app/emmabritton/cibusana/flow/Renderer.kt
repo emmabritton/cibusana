@@ -19,6 +19,8 @@ import app.emmabritton.cibusana.flow.login.LoginUi
 import app.emmabritton.cibusana.flow.register.RegisterUi
 import app.emmabritton.cibusana.flow.splash.SplashState
 import app.emmabritton.cibusana.flow.splash.SplashUi
+import app.emmabritton.cibusana.flow.weight.WeightState
+import app.emmabritton.cibusana.flow.weight.WeightUi
 import app.emmabritton.cibusana.flow.welcome.WelcomeUi
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.UnknownUiState
@@ -49,6 +51,10 @@ fun Render(state: AppState, actionReceiver: ActionReceiver, modifier: Modifier =
                 is HomeState -> HomeUi(
                     state = state,
                     uiState = state.uiState,
+                    actionReceiver = actionReceiver
+                )
+                is WeightState -> WeightUi(
+                    weightState = state.uiState,
                     actionReceiver = actionReceiver
                 )
                 is SplashState -> SplashUi()

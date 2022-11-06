@@ -3,6 +3,7 @@ package app.emmabritton.cibusana.persist
 import android.content.Context
 import app.emmabritton.cibusana.network.Logger
 import app.emmabritton.cibusana.persist.models.User
+import java.util.*
 
 interface Prefs {
     var user: User?
@@ -14,7 +15,7 @@ class AndroidPrefs(context: Context, private val logger: Logger) : Prefs {
     override var user: User?
         get() {
             return if (prefs.contains(KEY_USER_NAME) && prefs.contains(KEY_USER_TOKEN)) {
-                User(prefs.getString(KEY_USER_NAME, "")!!, prefs.getString(KEY_USER_TOKEN, "")!!)
+                User(prefs.getString(KEY_USER_NAME, "")!!, UUID.fromString(prefs.getString(KEY_USER_TOKEN, "")!!))
             } else {
                 null
             }
@@ -30,7 +31,7 @@ class AndroidPrefs(context: Context, private val logger: Logger) : Prefs {
                 logger.d("Storing user data for ${value.name}")
                 prefs.edit()
                     .putString(KEY_USER_NAME, value.name)
-                    .putString(KEY_USER_TOKEN, value.token)
+                    .putString(KEY_USER_TOKEN, value.token.toString())
                     .apply()
             }
         }
