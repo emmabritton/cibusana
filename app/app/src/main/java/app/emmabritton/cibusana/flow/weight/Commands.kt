@@ -5,7 +5,6 @@ import app.emmabritton.cibusana.persist.UserController
 import app.emmabritton.system.ActionReceiver
 import app.emmabritton.system.Command
 import org.koin.java.KoinJavaComponent.inject
-import java.time.ZonedDateTime
 
 class GetWeightForRange(private val range: Range) : Command {
     private val userController: UserController by inject(UserController::class.java)

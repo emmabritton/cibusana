@@ -13,6 +13,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
+import java.time.ZonedDateTime
 import java.util.*
 
 const val DI_URL = "url.string"
@@ -39,6 +40,7 @@ private val internalNetworkModule = module {
     single {
         Moshi.Builder()
             .add(UUID::class.java, UuidAdapter())
+            .add(ZonedDateTime::class.java, ZonedDateTimeAdapter())
             .build()
     }
 

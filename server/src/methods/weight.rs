@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use actix_web::{HttpRequest, Responder};
 use actix_web::web::{Json, Query};
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use crate::methods::consts::*;
 use crate::methods::{error_resp, ExtDb, get_user_id, success_resp};
@@ -10,8 +10,8 @@ use crate::utils::AppError;
 
 #[derive(Debug, Deserialize, Default)]
 pub struct WeightQuery {
-    pub start: NaiveDateTime,
-    pub end: NaiveDateTime,
+    pub start: DateTime<Utc>,
+    pub end: DateTime<Utc>,
 }
 
 pub async fn get_weights(
@@ -26,7 +26,7 @@ pub async fn get_weights(
         Err(num) => return Ok(error_resp(vec![num]))
     };
 
-    let results: Vec<(f32, NaiveDateTime)> = sqlx::query_as(&format!(
+    let results: Vec<(f32, DateTime<Utc>)> = sqlx::query_as(&format!(
         "SELECT {COL_KGS}, {COL_DATE} FROM {TABLE_WEIGHT} WHERE {COL_USER_ID} = $1 AND {COL_DATE} >= $2 AND {COL_DATE} <= $3 ORDER BY {COL_DATE}"
     ))
         .bind(user_id)
@@ -35,7 +35,7 @@ pub async fn get_weights(
         .fetch_all(&mut conn)
         .await?;
 
-    let map : HashMap<NaiveDateTime, f32> = results.into_iter()
+    let map : HashMap<DateTime<Utc>, f32> = results.into_iter()
         .map(|(kgs, date)| (date, kgs))
         .collect();
 

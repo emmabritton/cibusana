@@ -2,7 +2,7 @@
 pub mod request {
     use serde::Deserialize;
     use std::collections::HashMap;
-    use chrono::NaiveDateTime;
+    use chrono::{DateTime, Utc};
 
     #[derive(Debug, Deserialize)]
     pub struct Register {
@@ -19,7 +19,7 @@ pub mod request {
 
     #[derive(Debug, Deserialize, Default)]
     pub struct Weight {
-        pub date: NaiveDateTime,
+        pub date: DateTime<Utc>,
         pub amount: f32,
     }
 

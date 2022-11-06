@@ -208,7 +208,7 @@ impl request::Food {
             id,
             name,
             created_by: token,
-            created_at: Utc::now().naive_utc(),
+            created_at: Utc::now(),
             calories_p100,
             carbs_p100,
             fat_p100,
