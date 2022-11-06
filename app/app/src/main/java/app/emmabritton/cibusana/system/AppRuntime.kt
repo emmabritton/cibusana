@@ -2,6 +2,7 @@ package app.emmabritton.cibusana.system
 
 import android.os.Handler
 import android.os.Looper
+import app.emmabritton.cibusana.BuildConfig
 import app.emmabritton.cibusana.flow.reduce
 import app.emmabritton.system.*
 import timber.log.Timber
@@ -28,23 +29,34 @@ class Runtime(
     commandHandler,
     AppState.init()
 ) {
+    init {
+        commandHandler.actionReceiver = this
+    }
+
     override fun receive(action: Action) {
         Timber.tag(TAG).d("Received ${action.describe()} during $state")
         if (action is GoBack) {
             //TODO: cancel commands
+            Timber.tag(TAG).i("Going back (dropping ${state.uiHistory.take(state.uiHistory.count() - 2).joinToString()})")
             state = state.copy(uiState = action.state, uiHistory = state.uiHistory.take(state.uiHistory.count() - 2))
             render(state)
         } else {
             super.receive(action)
             if (state.uiState.config.clearUiHistory) {
+                Timber.tag(TAG).i("Clearing UI History")
                 state = state.copy(uiHistory = emptyList())
             }
             if (state.uiState.config.addToHistory) {
+                Timber.tag(TAG).i("Adding to history")
                 val isSameClass = state.uiHistory.lastOrNull()?.javaClass == state.uiState.javaClass
                 if (isSameClass && state.uiState.config.replaceDuplicate) {
+                    Timber.tag(TAG).i("Removing duplicate")
                     state = state.copy(uiHistory = state.uiHistory.dropLast(1))
                 }
                 state = state.copy(uiHistory = state.uiHistory + state.uiState)
+            }
+            if (BuildConfig.DEBUG) {
+                render(state)
             }
         }
     }
@@ -59,16 +71,16 @@ class Runtime(
             val config = state.uiState.config
             if (config.isBackEnabled) {
                 if (state.uiHistory.count() <= 1) {
-                    Timber.tag(TAG).d("Finishing as stack is empty")
+                    Timber.tag(TAG).i("Finishing as stack is empty")
                     false
                 } else {
-                    Timber.tag(TAG).d("Restoring to previous screen")
+                    Timber.tag(TAG).i("Restoring to previous screen")
                     val lastTwo = state.uiHistory.takeLast(2)
                     receive(GoBack(lastTwo[0]))
                     true
                 }
             } else {
-                Timber.tag(TAG).d("Ignored as back disabled")
+                Timber.tag(TAG).i("Ignored as back disabled")
                 true
             }
         }
