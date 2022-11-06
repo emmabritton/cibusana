@@ -10,7 +10,10 @@ class GetWeightForRange(private val range: Range) : Command {
     private val userController: UserController by inject(UserController::class.java)
 
     override fun run(actionReceiver: ActionReceiver) {
-        userController.getWeights(range.start, range.end)
+        userController.getWeights(
+            range.start.withHour(0).withMinute(0).withSecond(0),
+            range.end.withHour(23).withMinute(59).withSecond(59)
+        )
             .onSuccess {
                 actionReceiver.receive(WeightAction.ReplaceWeight(it))
             }

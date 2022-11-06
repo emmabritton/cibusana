@@ -6,6 +6,7 @@ import app.emmabritton.cibusana.network.apis.MeApi
 import app.emmabritton.cibusana.network.apis.UserApi
 import app.emmabritton.cibusana.network.models.*
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 internal const val HEADER_TOKEN = "x-token"
@@ -37,7 +38,7 @@ class Api internal constructor(
     fun getAllergens() = executeRequest(logger, dataApi.getAllergens())
 
     fun getWeights(token: UUID, start: ZonedDateTime, end: ZonedDateTime) =
-        executeRequest(logger, meApi.weight(token, start, end))
+        executeRequest(logger, meApi.weight(token, start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME), end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
 
     fun setWeight(token: UUID, kgs: Float, date: ZonedDateTime) =
         executeRequest(logger, meApi.weight(token, WeightRequest(kgs, date)))

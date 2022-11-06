@@ -15,7 +15,7 @@ fun reduceWeightAction(action: WeightAction, state: AppState): AppEffect {
         }
         is WeightAction.SearchRejected -> AppEffect(state.copy(uiState = WeightState.Error), emptyList())
         WeightAction.Show -> AppEffect(
-            state.copy(uiState = WeightState.Viewing.init()),
+            state.copy(uiState = WeightState.Loading(Range.init())),
             listOf(GetWeightForRange(Range.init()))
         )
         is WeightAction.UserChangedStartDate -> {
