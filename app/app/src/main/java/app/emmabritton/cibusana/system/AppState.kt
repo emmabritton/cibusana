@@ -3,11 +3,12 @@ package app.emmabritton.cibusana.system
 import app.emmabritton.cibusana.flow.splash.SplashState
 import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.State
+import java.util.Queue
 
 data class AppState(
     val error: String?,
     val uiState: UiState,
-    val uiHistory: List<UiState>,
+    val uiHistory: ArrayDeque<UiState>,
     val user: User?
 ) : State {
     override fun toString(): String {
@@ -21,7 +22,7 @@ data class AppState(
     companion object {
         fun init(): AppState {
             val uiState = SplashState
-            return AppState(null, uiState, emptyList(), null)
+            return AppState(null, uiState, ArrayDeque(), null)
         }
     }
 }

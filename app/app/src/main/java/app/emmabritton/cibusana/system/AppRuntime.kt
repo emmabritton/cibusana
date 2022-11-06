@@ -2,6 +2,7 @@ package app.emmabritton.cibusana.system
 
 import android.os.Handler
 import android.os.Looper
+import app.emmabritton.cibusana.flow.common.CommonAction
 import app.emmabritton.cibusana.flow.reduce
 import app.emmabritton.system.*
 import timber.log.Timber
@@ -34,7 +35,7 @@ class Runtime(
         postStateChange = {
             if (state.uiState.config.clearUiHistory) {
                 Timber.tag(TAG).i("Clearing History")
-                state = state.copy(uiHistory = emptyList())
+                state = state.copy(uiHistory = ArrayDeque())
             }
             if (state.uiState.config.addToHistory) {
                 Timber.tag(TAG).i("Adding ${state.uiState.javaClass.simpleName} to history")
@@ -42,23 +43,16 @@ class Runtime(
                     state.uiHistory.lastOrNull()?.javaClass == state.uiState.javaClass
                 if (isSameClass && state.uiState.config.replaceDuplicate) {
                     Timber.tag(TAG).i("Removing duplicate")
-                    state = state.copy(uiHistory = state.uiHistory.dropLast(1))
+                    state.uiHistory.removeLast()
                 }
-                state = state.copy(uiHistory = state.uiHistory + state.uiState)
+                state.uiHistory.addLast(state.uiState)
             }
         }
     }
 
     override fun receive(action: Action) {
         Timber.tag(TAG).d("Received ${action.describe()} during $state")
-        if (action is GoBack) {
-            //TODO: cancel commands
-            Timber.tag(TAG).i("Going back (dropping ${state.uiHistory.take(state.uiHistory.count() - 2).joinToString()})")
-            state = state.copy(uiState = action.state, uiHistory = state.uiHistory.take(state.uiHistory.count() - 2))
-            render(state)
-        } else {
-            super.receive(action)
-        }
+        super.receive(action)
     }
 
     /**
@@ -75,8 +69,7 @@ class Runtime(
                     false
                 } else {
                     Timber.tag(TAG).i("Restoring to previous screen")
-                    val lastTwo = state.uiHistory.takeLast(2)
-                    receive(GoBack(lastTwo[0]))
+                    receive(CommonAction.GoBack)
                     true
                 }
             } else {

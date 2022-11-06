@@ -13,4 +13,11 @@ sealed class CommonAction : Action {
      * A login or register request successfully returned
      */
     class LoggedIn(val user: User) : CommonAction()
+
+    /**
+     * User wants to go to previous screen
+     */
+    object GoBack : CommonAction() {
+        override fun describe() = "GoBack"
+    }
 }
