@@ -2,7 +2,6 @@ package app.emmabritton.cibusana.system
 
 import android.os.Handler
 import android.os.Looper
-import app.emmabritton.cibusana.BuildConfig
 import app.emmabritton.cibusana.flow.reduce
 import app.emmabritton.system.*
 import timber.log.Timber
@@ -31,6 +30,23 @@ class Runtime(
 ) {
     init {
         commandHandler.actionReceiver = this
+
+        postStateChange = {
+            if (state.uiState.config.clearUiHistory) {
+                Timber.tag(TAG).i("Clearing History")
+                state = state.copy(uiHistory = emptyList())
+            }
+            if (state.uiState.config.addToHistory) {
+                Timber.tag(TAG).i("Adding ${state.uiState.javaClass.simpleName} to history")
+                val isSameClass =
+                    state.uiHistory.lastOrNull()?.javaClass == state.uiState.javaClass
+                if (isSameClass && state.uiState.config.replaceDuplicate) {
+                    Timber.tag(TAG).i("Removing duplicate")
+                    state = state.copy(uiHistory = state.uiHistory.dropLast(1))
+                }
+                state = state.copy(uiHistory = state.uiHistory + state.uiState)
+            }
+        }
     }
 
     override fun receive(action: Action) {
@@ -42,22 +58,6 @@ class Runtime(
             render(state)
         } else {
             super.receive(action)
-            if (state.uiState.config.clearUiHistory) {
-                Timber.tag(TAG).i("Clearing UI History")
-                state = state.copy(uiHistory = emptyList())
-            }
-            if (state.uiState.config.addToHistory) {
-                Timber.tag(TAG).i("Adding to history")
-                val isSameClass = state.uiHistory.lastOrNull()?.javaClass == state.uiState.javaClass
-                if (isSameClass && state.uiState.config.replaceDuplicate) {
-                    Timber.tag(TAG).i("Removing duplicate")
-                    state = state.copy(uiHistory = state.uiHistory.dropLast(1))
-                }
-                state = state.copy(uiHistory = state.uiHistory + state.uiState)
-            }
-            if (BuildConfig.DEBUG) {
-                render(state)
-            }
         }
     }
 

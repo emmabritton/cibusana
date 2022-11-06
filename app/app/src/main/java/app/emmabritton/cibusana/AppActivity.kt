@@ -68,10 +68,10 @@ private fun DebugView(state: AppState) {
         Column {
             if (state.uiHistory.isNotEmpty()) {
                 for (history in state.uiHistory.asReversed()) {
-                    Text(history.javaClass.simpleName)
+                    Text(history.javaClass.simpleName, style = MaterialTheme.typography.labelSmall)
                 }
             } else {
-                Text("No history")
+                Text("No history", style = MaterialTheme.typography.labelSmall)
             }
         }
     }

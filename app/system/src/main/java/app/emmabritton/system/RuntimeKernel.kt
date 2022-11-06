@@ -35,6 +35,8 @@ open class RuntimeKernel<S: State>(
 
     protected val stateChangeLock = Any()
 
+    protected var postStateChange: () -> Unit = {}
+
     init {
         commandHandler.actionReceiver = this
     }
@@ -47,6 +49,7 @@ open class RuntimeKernel<S: State>(
                 for (command in effect.commands) {
                     commandHandler.add(command)
                 }
+                postStateChange()
                 render(state)
             }
         }
