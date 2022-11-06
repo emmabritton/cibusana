@@ -21,6 +21,8 @@ CREATE SCHEMA "food-app";
 
 ALTER SCHEMA "food-app" OWNER TO doadmin;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -109,17 +111,11 @@ CREATE TABLE "food-app".meal_entry (
     calories integer NOT NULL
 );
 
-CREATE SEQUENCE "food-app".user_tokens_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
 CREATE TABLE "food-app".user_tokens (
-    id bigint DEFAULT nextval('"food-app".user_tokens_id_seq'::regclass) NOT NULL,
     user_id uuid NOT NULL,
-    token uuid NOT NULL
+    token uuid NOT NULL DEFAULT uuid_generate_v1(),
+    created_at timestamp without time zone NOT NULL DEFAULT now(),
+    CONSTRAINT user_tokens_pkey PRIMARY KEY (token)
 );
 
 CREATE TABLE "food-app".users (
@@ -176,6 +172,8 @@ ALTER TABLE ONLY "food-app".users
 
 ALTER TABLE ONLY "food-app".weight
     ADD CONSTRAINT weight_pkey PRIMARY KEY (id);
+
+CREATE INDEX user_id_idx ON "food-app".weight USING btree(user_id ASC NULLS LAST);
 
 GRANT CONNECT ON DATABASE journal TO read_write_journal;
 GRANT USAGE ON SCHEMA "food-app" TO read_write_journal;
