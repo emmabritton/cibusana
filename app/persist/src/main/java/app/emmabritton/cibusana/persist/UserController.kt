@@ -11,7 +11,7 @@ class UserController(private val api: Api, private val prefs: Prefs) {
     fun register(email: String, password: String, name: String) =
         api.register(email, password, name)
 
-    fun getWeights(start: ZonedDateTime, end: ZonedDateTime): Result<List<Pair<Float, ZonedDateTime>>> = loggedInRequest { api.getWeights(it, start, end) }
+    fun getWeights(start: ZonedDateTime, end: ZonedDateTime): Result<Map<ZonedDateTime, Float>> = loggedInRequest { api.getWeights(it, start, end) }
     fun setWeight(kgs: Float, date: ZonedDateTime): Result<Unit> = loggedInRequest { api.setWeight(it, kgs, date).map { } }
 
     private fun <T> loggedInRequest(method: (UUID) -> Result<T>): Result<T> {

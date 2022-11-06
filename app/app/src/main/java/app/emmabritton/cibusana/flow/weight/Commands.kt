@@ -12,9 +12,8 @@ class GetWeightForRange(private val range: Range) : Command {
 
     override fun run(actionReceiver: ActionReceiver) {
         userController.getWeights(range.start, range.end)
-            .onSuccess { list ->
-                val map: Map<ZonedDateTime, Float> = list.associate { it.second to it.first }
-                actionReceiver.receive(WeightAction.ReplaceWeight(map))
+            .onSuccess {
+                actionReceiver.receive(WeightAction.ReplaceWeight(it))
             }
             .onFailure {
                 actionReceiver.receive(WeightAction.SearchRejected(it.errorCodes()))

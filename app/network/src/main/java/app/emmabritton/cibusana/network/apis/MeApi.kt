@@ -14,7 +14,7 @@ interface MeApi {
         @Header(HEADER_TOKEN) token: UUID,
         @Query("start") start: ZonedDateTime,
         @Query("end") end: ZonedDateTime
-    ): Call<ResponseWrapper<List<Pair<Float, ZonedDateTime>>>>
+    ): Call<ResponseWrapper<Map<ZonedDateTime, Float>>>
 
     @POST("/me/weight")
     fun weight(
