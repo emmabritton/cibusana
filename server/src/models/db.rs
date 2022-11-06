@@ -19,6 +19,14 @@ pub struct UserTokens {
 }
 
 #[derive(Debug, sqlx::FromRow)]
+pub struct Weight {
+    pub id: u64,
+    pub user_id: Uuid,
+    pub kgs: f32,
+    pub date: NaiveDateTime
+}
+
+#[derive(Debug, sqlx::FromRow)]
 pub struct Food {
     pub id: Uuid,
     pub name: String,

@@ -5,15 +5,14 @@ use crate::methods::{error_resp, success_page_resp, success_resp, ExtDb};
 use crate::models::db;
 use crate::models::network::response;
 use crate::utils::AppError;
-use axum::extract::{Path, Query};
-use axum::response::IntoResponse;
-use axum::Extension;
 use log::trace;
 use serde::Deserialize;
 use sqlx::{Postgres, QueryBuilder};
 use std::collections::{HashMap, HashSet};
 use std::ops::Range;
 use std::str::FromStr;
+use actix_web::Responder;
+use actix_web::web::{Path, Query};
 use uuid::Uuid;
 
 const MIN_MAX_CALORIES: u32 = 100;
@@ -57,14 +56,14 @@ pub struct MealSearch {
 }
 
 impl MealQuery {
-    pub fn into_search(self) -> Result<MealSearch, Vec<ErrorNum>> {
+    pub fn into_search(&self) -> Result<MealSearch, Vec<ErrorNum>> {
         let mut errors = HashSet::new();
 
         let mut include_flags = vec![];
         let mut exclude_flags = vec![];
         let mut allergens = vec![];
 
-        if let Some(flags) = self.include_flags.map(|str| {
+        if let Some(flags) = self.include_flags.as_ref().map(|str| {
             str.split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<String>>()
@@ -78,7 +77,7 @@ impl MealQuery {
             }
         }
 
-        if let Some(flags) = self.exclude_flags.map(|str| {
+        if let Some(flags) = self.exclude_flags.as_ref().map(|str| {
             str.split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<String>>()
@@ -92,7 +91,7 @@ impl MealQuery {
             }
         }
 
-        if let Some(allergies) = self.allergens.map(|str| {
+        if let Some(allergies) = self.allergens.as_ref().map(|str| {
             str.split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<String>>()
@@ -164,8 +163,8 @@ impl MealQuery {
         if errors.is_empty() {
             Ok(MealSearch {
                 page: self.page,
-                name: self.name,
-                flavor: self.flavor,
+                name: self.name.clone(),
+                flavor: self.flavor.clone(),
                 include_flags,
                 exclude_flags,
                 allergens,
@@ -284,9 +283,9 @@ fn make_ingredient_query<'a>(
 }
 
 pub async fn meal(
-    Query(params): Query<MealQuery>,
-    Extension(db): ExtDb,
-) -> Result<impl IntoResponse, AppError> {
+    params: Query<MealQuery>,
+    db: ExtDb,
+) -> Result<impl Responder, AppError> {
     let result = params.into_search();
     if let Err(nums) = result {
         return Ok(error_resp(nums));
@@ -326,14 +325,14 @@ pub async fn meal(
 }
 
 pub async fn exact_meal(
-    Path(id): Path<Uuid>,
-    Extension(db): ExtDb,
-) -> Result<impl IntoResponse, AppError> {
+    id: Path<Uuid>,
+    db: ExtDb,
+) -> Result<impl Responder, AppError> {
     let mut conn = db.acquire().await?;
     let meal: Option<db::Meal> = sqlx::query_as(&format!(
         "SELECT * FROM {TABLE_MEAL} WHERE {COL_ID} = $1 AND hidden = false"
     ))
-    .bind(id)
+    .bind(id.into_inner())
     .fetch_optional(&mut conn)
     .await?;
     if let Some(meal) = meal {

@@ -13,14 +13,13 @@ use crate::methods::get_food::{exact_food, food};
 use crate::methods::get_meal::{exact_meal, meal};
 use crate::methods::user::{login, register};
 use anyhow::Result;
-use axum::routing::{get, post};
-use axum::{Extension, Router, Server};
 use dotenvy::dotenv;
 use log::debug;
-use std::net::SocketAddr;
-use std::sync::Arc;
+use actix_web::{App, HttpServer};
+use actix_web::web::{Data, get, post};
+use crate::methods::weight::{get_weights, set_weight};
 
-#[tokio::main]
+#[actix_web::main]
 async fn main() -> Result<()> {
     let _ = dotenv().is_ok();
     println!("Starting food server...");
@@ -29,32 +28,32 @@ async fn main() -> Result<()> {
 
     debug!("Config read");
 
-    let db_state = Arc::new(connect_database(&config).await?);
+    let db_state = Data::new(connect_database(&config).await?);
 
     debug!("DB connection established");
 
-    let app = Router::new()
-        .route("/alive", get(alive))
-        .route("/users/register", post(register))
-        .route("/users/login", post(login))
-        .route("/food", get(food)) //.post(submit_food))
-        .route("/food/:id", get(exact_food)) //.post(submit_food))
-        .route("/meal", get(meal)) //.post(submit_food))
-        .route("/meal/:id", get(exact_meal)) //.post(submit_food))
-        .route("/data/categories", get(categories))
-        .route("/data/companies", get(companies))
-        .route("/data/flavors", get(flavors))
-        .route("/data/allergens", get(allergens))
-        .route("/data/meal_times", get(meal_times))
-        .route("/data/flags", get(flags))
-        .route("/data/cuisines", get(cuisines))
-        .layer(Extension(db_state));
+    debug!("Server starting on {}:{}", config.ip_addr, config.port);
 
-    let addr = SocketAddr::from((config.ip_addr, config.port));
-
-    debug!("Server starting on {addr}");
-
-    Server::bind(&addr).serve(app.into_make_service()).await?;
+    HttpServer::new(move || {
+        App::new()
+            .app_data(db_state.clone())
+            .route("/alive", get().to(alive))
+            .route("/users/register", post().to(register))
+            .route("/users/login", post().to(login))
+            .route("/food", get().to(food)) //.post(submit_food))
+            .route("/food/:id", get().to(exact_food)) //.post(submit_food))
+            .route("/meal", get().to(meal)) //.post(submit_food))
+            .route("/meal/:id", get().to(exact_meal)) //.post(submit_food))
+            .route("/data/categories", get().to(categories))
+            .route("/data/companies", get().to(companies))
+            .route("/data/flavors", get().to(flavors))
+            .route("/data/allergens", get().to(allergens))
+            .route("/data/meal_times", get().to(meal_times))
+            .route("/data/flags", get().to(flags))
+            .route("/data/cuisines", get().to(cuisines))
+            .route("/me/weight", get().to(get_weights))
+            .route("/me/weight", post().to(set_weight))
+    }).bind((config.ip_addr, config.port))?.run().await?;
 
     Ok(())
 }

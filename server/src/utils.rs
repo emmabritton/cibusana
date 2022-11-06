@@ -1,5 +1,7 @@
-use axum::http::StatusCode;
-use axum::response::{IntoResponse, Response};
+use std::fmt::{Debug, Display, Formatter};
+use actix_web::body::BoxBody;
+use actix_web::http::StatusCode;
+use actix_web::{HttpResponse, ResponseError};
 use password_hash::rand_core::OsRng;
 use password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 use scrypt::Scrypt;
@@ -20,13 +22,26 @@ pub fn verify(password: &str, hashed: &str) -> bool {
 
 pub struct AppError(anyhow::Error);
 
-impl IntoResponse for AppError {
-    fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Something went wrong: {}", self.0),
-        )
-            .into_response()
+impl Debug for AppError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f,"{}",self.0)
+    }
+}
+
+impl Display for AppError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f,"{}",self.0)
+    }
+}
+
+impl ResponseError for AppError {
+    fn status_code(&self) -> StatusCode {
+        StatusCode::OK
+    }
+
+    fn error_response(&self) -> HttpResponse<BoxBody> {
+        HttpResponse::Ok()
+            .body(format!("Something went wrong: {}", self.0))
     }
 }
 

@@ -2,6 +2,7 @@
 pub mod request {
     use serde::Deserialize;
     use std::collections::HashMap;
+    use chrono::NaiveDateTime;
 
     #[derive(Debug, Deserialize)]
     pub struct Register {
@@ -14,6 +15,12 @@ pub mod request {
     pub struct Login {
         pub email: String,
         pub password: String,
+    }
+
+    #[derive(Debug, Deserialize, Default)]
+    pub struct Weight {
+        pub date: NaiveDateTime,
+        pub amount: f32,
     }
 
     #[derive(Debug, Deserialize)]

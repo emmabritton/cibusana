@@ -6,15 +6,14 @@ use crate::methods::{error_resp, success_page_resp, success_resp, ExtDb};
 use crate::models::db;
 use crate::models::network::response;
 use crate::utils::AppError;
-use axum::extract::{Path, Query};
-use axum::response::IntoResponse;
-use axum::Extension;
 use log::trace;
 use serde::Deserialize;
 use sqlx::{Postgres, QueryBuilder};
 use std::collections::HashSet;
 use std::ops::Range;
 use std::str::FromStr;
+use actix_web::Responder;
+use actix_web::web::{Path, Query};
 use uuid::Uuid;
 
 const MIN_MAX_CALORIES: u32 = 100;
@@ -70,7 +69,7 @@ pub struct FoodSearch {
 }
 
 impl FoodQuery {
-    pub fn into_search(self) -> Result<FoodSearch, Vec<ErrorNum>> {
+    pub fn into_search(&self) -> Result<FoodSearch, Vec<ErrorNum>> {
         let mut errors = HashSet::new();
 
         let cat = if let Some(text) = &self.category {
@@ -84,7 +83,7 @@ impl FoodQuery {
             None
         };
 
-        let subcat = if let Some(text) = self.subcategory {
+        let subcat = if let Some(text) = &self.subcategory {
             if let Ok(subcat) = FoodSubCategory::from_str(&text) {
                 if self.category.is_none() {
                     errors.insert(INVALID_FILTER_CATEGORY);
@@ -104,7 +103,7 @@ impl FoodQuery {
         let mut exclude_flags = vec![];
         let mut allergens = vec![];
 
-        if let Some(flags) = self.include_flags.map(|str| {
+        if let Some(flags) = self.include_flags.as_ref().map(|str| {
             str.split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<String>>()
@@ -118,7 +117,7 @@ impl FoodQuery {
             }
         }
 
-        if let Some(flags) = self.exclude_flags.map(|str| {
+        if let Some(flags) = self.exclude_flags.as_ref().map(|str| {
             str.split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<String>>()
@@ -132,7 +131,7 @@ impl FoodQuery {
             }
         }
 
-        if let Some(allergies) = self.allergens.map(|str| {
+        if let Some(allergies) = self.allergens.as_ref().map(|str| {
             str.split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<String>>()
@@ -203,13 +202,13 @@ impl FoodQuery {
 
         if errors.is_empty() {
             Ok(FoodSearch {
-                page: self.page,
-                company: self.company,
-                range: self.range,
+                page: self.page.clone(),
+                company: self.company.clone(),
+                range: self.range.clone(),
                 category: cat,
                 subcategory: subcat,
-                name: self.name,
-                flavor: self.flavor,
+                name: self.name.clone(),
+                flavor: self.flavor.clone(),
                 include_flags,
                 exclude_flags,
                 allergens,
@@ -225,7 +224,7 @@ impl FoodQuery {
 }
 
 impl FoodSearch {
-    pub fn process_query(self, lifeline_placeholder: &str) -> QueryBuilder<Postgres> {
+    pub fn process_query(&self, lifeline_placeholder: &str) -> QueryBuilder<Postgres> {
         let mut builder = QueryBuilder::new(format!(
             "{}SELECT * FROM {TABLE_FOOD}",
             lifeline_placeholder
@@ -233,17 +232,17 @@ impl FoodSearch {
 
         builder.push(" WHERE hidden = false ");
 
-        if let Some(name) = self.name {
+        if let Some(name) = &self.name {
             builder.push(format!(" AND {COL_NAME} ILIKE "));
             builder.push_bind(format!("%{}%", name));
         }
 
-        if let Some(company) = self.company {
+        if let Some(company) = &self.company {
             builder.push(format!(" AND {COL_COMPANY} = "));
             builder.push_bind(company);
         }
 
-        if let Some(range) = self.range {
+        if let Some(range) = &self.range {
             builder.push(format!(" AND {COL_RANGE} = "));
             builder.push_bind(range);
         }
@@ -258,7 +257,7 @@ impl FoodSearch {
             builder.push_bind(subcategory.to_string());
         }
 
-        if let Some(flavor) = self.flavor {
+        if let Some(flavor) = &self.flavor {
             builder.push(" AND ");
             builder.push_bind(flavor);
             builder.push(format!(" = ANY({COL_FLAVORS}) "));
@@ -267,7 +266,7 @@ impl FoodSearch {
         if !self.include_flags.is_empty() {
             builder.push(format!(" AND {COL_FLAGS} @> ARRAY["));
             let mut sep = builder.separated(",");
-            for flag in self.include_flags {
+            for flag in &self.include_flags {
                 sep.push_bind(flag);
             }
             sep.push_unseparated("]::text[] ");
@@ -276,7 +275,7 @@ impl FoodSearch {
         if !self.exclude_flags.is_empty() {
             builder.push(format!(" AND NOT ({COL_FLAGS} && ARRAY["));
             let mut sep = builder.separated(",");
-            for flag in self.exclude_flags {
+            for flag in &self.exclude_flags {
                 sep.push_bind(flag);
             }
             sep.push_unseparated("]::text[]) ");
@@ -285,34 +284,34 @@ impl FoodSearch {
         if !self.allergens.is_empty() {
             builder.push(format!(" AND NOT ({COL_ALLERGENS} && ARRAY["));
             let mut sep = builder.separated(",");
-            for allergy in self.allergens {
+            for allergy in &self.allergens {
                 sep.push_bind(allergy);
             }
             sep.push_unseparated("]::text[]) ");
         }
 
-        if let Some(cals) = self.calories {
+        if let Some(cals) = &self.calories {
             builder.push(format!(" AND {COL_CALORIES_P100} >= "));
             builder.push_bind(cals.start);
             builder.push(format!(" AND {COL_CALORIES_P100} <= "));
             builder.push_bind(cals.end);
         }
 
-        if let Some(carbs) = self.carbs {
+        if let Some(carbs) = &self.carbs {
             builder.push(format!(" AND {COL_CARBS_P100} >= "));
             builder.push_bind(carbs.start);
             builder.push(format!(" AND {COL_CARBS_P100} <= "));
             builder.push_bind(carbs.end);
         }
 
-        if let Some(fat) = self.fat {
+        if let Some(fat) = &self.fat {
             builder.push(format!(" AND {COL_FAT_P100} >= "));
             builder.push_bind(fat.start);
             builder.push(format!(" AND {COL_FAT_P100} <= "));
             builder.push_bind(fat.end);
         }
 
-        if let Some(protein) = self.protein {
+        if let Some(protein) = &self.protein {
             builder.push(format!(" AND {COL_PROTEIN_P100} >= "));
             builder.push_bind(protein.start);
             builder.push(format!(" AND {COL_PROTEIN_P100} <= "));
@@ -329,14 +328,14 @@ impl FoodSearch {
 }
 
 pub async fn exact_food(
-    Path(id): Path<Uuid>,
-    Extension(db): ExtDb,
-) -> Result<impl IntoResponse, AppError> {
+    id: Path<Uuid>,
+    db: ExtDb,
+) -> Result<impl Responder, AppError> {
     let mut conn = db.acquire().await?;
     let food: Option<db::Food> = sqlx::query_as(&format!(
         "SELECT * FROM {TABLE_FOOD} WHERE {COL_ID} = $1 AND hidden = false"
     ))
-    .bind(id)
+    .bind(id.into_inner())
     .fetch_optional(&mut conn)
     .await?;
     if let Some(food) = food {
@@ -351,20 +350,20 @@ pub async fn exact_food(
 }
 
 pub async fn food(
-    Query(params): Query<FoodQuery>,
-    Extension(db): ExtDb,
-) -> Result<impl IntoResponse, AppError> {
-    let result = params.into_search();
+    params: Query<FoodQuery>,
+    db: ExtDb,
+) -> Result<impl Responder, AppError> {
+    let result = &params.into_search();
     if let Err(nums) = result {
-        return Ok(error_resp(nums));
+        return Ok(error_resp(nums.clone()));
     }
-    let search = result.unwrap();
+    let search = result.as_ref().unwrap();
     trace!("Searching with {:?}", search);
     let page = search.page;
     let mut conn = db.acquire().await?;
     //querybuilder requires something for its lifetime, so use empty string
     let lifeline_placeholder = "";
-    let mut builder = search.process_query(lifeline_placeholder);
+    let builder = &mut search.process_query(lifeline_placeholder);
     let query = builder.build_query_as::<db::Food>();
     let result: Vec<db::Food> = query.fetch_all(&mut conn).await?;
     let mut output: Vec<response::Food> = vec![];
