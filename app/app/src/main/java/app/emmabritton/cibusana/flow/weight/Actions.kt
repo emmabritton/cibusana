@@ -9,8 +9,12 @@ private val loadingOnly = { state: WeightState? -> state is WeightState.Loading 
 
 sealed class WeightAction(val stateValidator: (WeightState?) -> Boolean) : Action {
     object Show : WeightAction(any)
+    object SubmitSuccess : WeightAction(loadingOnly)
+    object SubmitAmount : WeightAction(viewingOnly)
+    class UserChangedAmount(val amount: String): WeightAction(viewingOnly)
     class UserChangedStartDate(val date: ZonedDateTime) : WeightAction(viewingOnly)
     class UserChangedEndDate(val date: ZonedDateTime) : WeightAction(viewingOnly)
     class ReplaceWeight(val weights: Map<ZonedDateTime, Float>) : WeightAction(loadingOnly)
     class SearchRejected(val errors: List<Int>) : WeightAction(loadingOnly)
+    class SubmitWeightRejected(val errors: List<Int>) : WeightAction(loadingOnly)
 }

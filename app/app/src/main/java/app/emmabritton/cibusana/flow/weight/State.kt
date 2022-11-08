@@ -11,18 +11,30 @@ data class Range(val start: ZonedDateTime, val end: ZonedDateTime) {
 }
 
 sealed class WeightState(override val config: UiStateConfig) : UiState {
-    data class Viewing(val weights: Map<ZonedDateTime, Float>, val range: Range) :
+    data class Viewing(
+        val weights: Map<ZonedDateTime, Float>,
+        val range: Range,
+        val newAmount: Float,
+        val newDate: ZonedDateTime
+    ) :
         WeightState(UiStateConfig.generalScreen()) {
-        fun toLoading() = Loading(range)
+        fun toLoading() = Loading(this)
 
         companion object {
-            fun init() = Viewing(
-                emptyMap(),
-                Range.init()
+            fun init() = Viewing(emptyMap(), Range.init(), 100f, ZonedDateTime.now())
+        }
+    }
+
+    data class Loading(val viewing: Viewing) :
+        WeightState(UiStateConfig.loadingScreen()) {
+        fun toViewing() = viewing
+
+        companion object {
+            fun init() = Loading(
+                Viewing.init()
             )
         }
     }
 
-    data class Loading(val range: Range) : WeightState(UiStateConfig.loadingScreen())
     object Error : WeightState(UiStateConfig.tempScreen())
 }
