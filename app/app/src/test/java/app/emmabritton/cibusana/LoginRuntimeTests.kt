@@ -13,6 +13,7 @@ import app.emmabritton.cibusana.system.AppState
 import okhttp3.mockwebserver.MockResponse
 import org.junit.Test
 import org.koin.java.KoinJavaComponent.inject
+import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -40,7 +41,8 @@ class LoginRuntimeTests : RuntimeTest() {
 
     @Test
     fun `check login with valid details`() {
-        server.enqueue(MockResponse().setBody("""{"content":{"name":"Test","token":"token-value"}}"""))
+        val uuid = UUID.randomUUID()
+        server.enqueue(MockResponse().setBody("""{"content":{"name":"Test","token":"${uuid.toString()}"}}"""))
 
         val runtime = createTestRuntime()
 
@@ -55,16 +57,16 @@ class LoginRuntimeTests : RuntimeTest() {
 
         runtime.assertUiState(HomeState::class.java)
         assertEquals(runtime.state.user?.name, "Test")
-        assertEquals(runtime.state.user?.token, "token-value")
+        assertEquals(runtime.state.user?.token, uuid)
 
         val prefs: Prefs by inject(Prefs::class.java)
-        assertEquals(prefs.user, User("Test", "token-value"))
+        assertEquals(prefs.user, User("Test", uuid))
     }
 
     @Test
     fun `test whole app flow from splash to home, with one failed login`() {
         setupPreloadData()
-        server.enqueue(MockResponse().setBody("""{"content":{"name":"Test2","token":"token-value2"}}"""))
+        server.enqueue(MockResponse().setBody("""{"content":{"name":"Test2","token":"${UUID.randomUUID()}"}}"""))
 
         val runtime = createTestRuntime()
 
