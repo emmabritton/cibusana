@@ -1,5 +1,6 @@
 package app.emmabritton.cibusana
 
+import app.emmabritton.cibusana.LoginResponse
 import app.emmabritton.cibusana.flow.home.HomeState
 import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.LoginState
@@ -30,6 +31,8 @@ import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.*
 import kotlin.test.assertEquals
+
+typealias LoginResponse = String
 
 open class RuntimeTest {
     protected lateinit var server: MockWebServer
@@ -133,6 +136,7 @@ open class RuntimeTest {
 
     inner class SplashScope(private val scope: RuntimeScope) {
         fun init() {
+            queuePreloadData()
             scope.runtime.receive(SplashAction.InitialiseApp)
         }
     }
@@ -148,15 +152,15 @@ open class RuntimeTest {
     }
 
     inner class LoginScope(private val scope: RuntimeScope) {
-        fun queueValidResponse(user: User = User("Test", UUID.randomUUID())) {
+        fun enterValidDetailsAndSubmit(user: User, email: String = "", password: String = "") {
             server.enqueue(MockResponse().setBody("""{"content":{"name":"${user.name}","token":"${user.token}"}}"""))
+            scope.runtime.receive(LoginAction.UserUpdatedEmail(email))
+            scope.runtime.receive(LoginAction.UserUpdatedEmail(password))
+            scope.runtime.receive(LoginAction.UserSubmitted)
         }
 
-        fun queueInvalidResponse() {
+        fun enterInvalidDetailsAndSubmit(email: String = "", password: String = "") {
             server.enqueue(MockResponse().setBody("""{"error":{"error_codes":[103],"error_message":"invalid"}}"""))
-        }
-
-        fun enterDetailsAndSubmitLogin(email: String = "", password: String = "") {
             scope.runtime.receive(LoginAction.UserUpdatedEmail(email))
             scope.runtime.receive(LoginAction.UserUpdatedEmail(password))
             scope.runtime.receive(LoginAction.UserSubmitted)

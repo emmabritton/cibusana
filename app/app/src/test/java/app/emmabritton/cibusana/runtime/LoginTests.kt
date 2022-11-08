@@ -11,8 +11,7 @@ class LoginTests : RuntimeTest() {
     fun `check login with invalid details`() {
         app {
             login(true) {
-                queueInvalidResponse()
-                enterDetailsAndSubmitLogin()
+                enterInvalidDetailsAndSubmit()
                 assertErrorVisible("103")
                 assertNotLoggedIn()
             }
@@ -24,8 +23,7 @@ class LoginTests : RuntimeTest() {
         val testUser = User("Test", UUID.randomUUID())
         app {
             login(true) {
-                queueValidResponse(testUser)
-                enterDetailsAndSubmitLogin()
+                enterValidDetailsAndSubmit(testUser)
             }
             home {
                 assertLoggedIn(testUser)
@@ -37,7 +35,6 @@ class LoginTests : RuntimeTest() {
     fun `test whole app flow from splash to home, with one failed login`() {
         val testUser = User("Test2", UUID.randomUUID())
         app {
-            queuePreloadData()
             splash {
                 init()
             }
@@ -45,14 +42,11 @@ class LoginTests : RuntimeTest() {
                 goToLogin()
             }
             login {
-                queueInvalidResponse()
-                queueValidResponse(testUser)
-
-                enterDetailsAndSubmitLogin()
+                enterInvalidDetailsAndSubmit()
                 assertErrorVisible()
                 clearError()
 
-                enterDetailsAndSubmitLogin()
+                enterValidDetailsAndSubmit(testUser)
             }
             home {
                 assertLoggedIn(testUser)
