@@ -1,5 +1,6 @@
-package app.emmabritton.cibusana
+package app.emmabritton.cibusana.reducer
 
+import app.emmabritton.cibusana.assertUiState
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.LoginState
@@ -7,7 +8,7 @@ import app.emmabritton.cibusana.flow.reduce
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class LoginReduceTests {
+class LoginTests {
     @Test
     fun `check init Entering state has no text`() {
         val state = AppState.init().copy(uiState = LoginState.Entering.init())
