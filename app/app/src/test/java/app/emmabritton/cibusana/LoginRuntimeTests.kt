@@ -42,7 +42,7 @@ class LoginRuntimeTests : RuntimeTest() {
     @Test
     fun `check login with valid details`() {
         val uuid = UUID.randomUUID()
-        server.enqueue(MockResponse().setBody("""{"content":{"name":"Test","token":"${uuid.toString()}"}}"""))
+        server.enqueue(MockResponse().setBody("""{"content":{"name":"Test","token":"$uuid"}}"""))
 
         val runtime = createTestRuntime()
 
