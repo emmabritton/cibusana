@@ -3,7 +3,6 @@ package app.emmabritton.cibusana.system
 import app.emmabritton.cibusana.flow.splash.SplashState
 import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.State
-import java.util.Queue
 
 data class AppState(
     val error: String?,

@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import app.emmabritton.cibusana.ui.theme.Dimen
 import app.emmabritton.cibusana.ui.theme.Dimen.Padding
 import app.emmabritton.cibusana.ui.theme.Dimen.Space
 import app.emmabritton.system.ActionReceiver

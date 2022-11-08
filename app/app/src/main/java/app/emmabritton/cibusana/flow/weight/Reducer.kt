@@ -3,7 +3,6 @@ package app.emmabritton.cibusana.flow.weight
 import app.emmabritton.cibusana.system.AppEffect
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.InvalidState
-import java.time.ZonedDateTime
 
 fun reduceWeightAction(action: WeightAction, state: AppState): AppEffect {
     if (!action.stateValidator(state.uiState as? WeightState)) {

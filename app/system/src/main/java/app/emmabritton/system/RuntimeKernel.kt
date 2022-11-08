@@ -37,10 +37,6 @@ open class RuntimeKernel<S: State>(
 
     protected var postStateChange: () -> Unit = {}
 
-    init {
-        commandHandler.actionReceiver = this
-    }
-
     override fun receive(action: Action) {
         synchronized(stateChangeLock) {
             runOnMainThread {
