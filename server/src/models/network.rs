@@ -44,6 +44,7 @@ pub mod response {
     use crate::constants::{Allergen, Cuisine, Flag};
     use serde::Serialize;
     use std::collections::HashMap;
+    use chrono::{DateTime, Utc};
     use uuid::Uuid;
 
     #[derive(Debug, Serialize)]
@@ -101,5 +102,13 @@ pub mod response {
         pub company: Option<String>,
         pub amount: u32,
         pub unit: String,
+    }
+
+    #[derive(Debug, Serialize)]
+    pub struct Weight {
+        #[serde(rename="d")]
+        pub date: DateTime<Utc>,
+        #[serde(rename="a")]
+        pub kgs: f32
     }
 }

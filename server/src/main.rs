@@ -17,7 +17,7 @@ use dotenvy::dotenv;
 use log::debug;
 use actix_web::{App, HttpServer};
 use actix_web::web::{Data, get, post};
-use crate::methods::weight::{get_weights, set_weight};
+use crate::methods::weight::{first_weight, get_weights, last_weight, set_weight};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
@@ -52,6 +52,8 @@ async fn main() -> Result<()> {
             .route("/data/flags", get().to(flags))
             .route("/data/cuisines", get().to(cuisines))
             .route("/me/weight", get().to(get_weights))
+            .route("/me/weight/first", get().to(first_weight))
+            .route("/me/weight/last", get().to(last_weight))
             .route("/me/weight", post().to(set_weight))
     }).bind((config.ip_addr, config.port))?.run().await?;
 
