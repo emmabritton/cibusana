@@ -41,6 +41,8 @@ pub const PROTEIN_NEGATIVE: ErrorNum = 135;
 pub const INVALID_CUISINE: ErrorNum = 136;
 pub const INVALID_INGREDIENT: ErrorNum = 137;
 pub const INVALID_ID: ErrorNum = 138;
+pub const INVALID_WEIGHT: ErrorNum = 139;
+pub const INVALID_GRAMS: ErrorNum = 140;
 pub const SERVER_ERROR: ErrorNum = 500;
 
 pub fn format_error(codes: &[ErrorNum]) -> String {
@@ -94,6 +96,8 @@ pub fn error_text(code: ErrorNum) -> &'static str {
         INVALID_CUISINE => "Invalid cuisine",
         INVALID_INGREDIENT => "Invalid ingredient",
         INVALID_ID => "Invalid ID",
+        INVALID_WEIGHT => "Invalid Weight",
+        INVALID_GRAMS => "Invalid Grams",
         _ => "",
     }
 }
