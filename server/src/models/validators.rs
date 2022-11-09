@@ -1,8 +1,6 @@
 use crate::constants::MIN_PASSWORD_LEN;
 use crate::errors::*;
 use crate::models::network::*;
-use crate::models::wrappers::RequestWrapper;
-use uuid::Uuid;
 
 impl request::Register {
     pub fn validate(&self) -> Vec<ErrorNum> {
@@ -21,30 +19,6 @@ impl request::Register {
             errors.push(PASSWORD_TOO_SHORT);
         }
         errors
-    }
-}
-
-impl<T> RequestWrapper<T> {
-    pub fn validate(self) -> Result<(Uuid, T), Vec<ErrorNum>> {
-        let mut errors = vec![];
-        let mut uuid = Uuid::default();
-        if let Some(token) = self.token {
-            if let Ok(token) = Uuid::try_from(token.as_str()) {
-                uuid = token;
-            } else {
-                errors.push(TOKEN_INVALID);
-            }
-        } else {
-            errors.push(TOKEN_EMPTY);
-        }
-
-        if let Some(content) = self.content {
-            return Ok((uuid, content));
-        } else {
-            errors.push(CONTENT_EMPTY);
-        }
-
-        Err(errors)
     }
 }
 

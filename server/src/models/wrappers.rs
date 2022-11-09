@@ -2,12 +2,6 @@ use crate::errors::format_error;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct RequestWrapper<T> {
-    pub content: Option<T>,
-    pub token: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 pub struct ResponseWrapper<T> {
     content: Option<T>,
     error: Option<ResponseError>,
