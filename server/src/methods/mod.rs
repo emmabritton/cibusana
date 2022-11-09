@@ -17,6 +17,7 @@ pub mod get_food;
 pub mod get_meal;
 pub mod user;
 pub mod weight;
+pub mod meal_entry;
 
 mod consts {
     pub const TABLE_USERS: &str = r#" "food-app"."users" "#;

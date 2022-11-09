@@ -16,8 +16,9 @@ use anyhow::Result;
 use dotenvy::dotenv;
 use log::debug;
 use actix_web::{App, HttpServer};
-use actix_web::web::{Data, get, post};
-use crate::methods::weight::{first_weight, get_weights, last_weight, set_weight};
+use actix_web::web::{Data, delete, get, post};
+use crate::methods::meal_entry::{add_entry, delete_entry, first_entry, get_entries, last_entry};
+use crate::methods::weight::{delete_weight, first_weight, get_weights, last_weight, set_weight};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
@@ -52,9 +53,15 @@ async fn main() -> Result<()> {
             .route("/data/flags", get().to(flags))
             .route("/data/cuisines", get().to(cuisines))
             .route("/me/weight", get().to(get_weights))
+            .route("/me/weight/{date}", delete().to(delete_weight))
             .route("/me/weight/first", get().to(first_weight))
             .route("/me/weight/last", get().to(last_weight))
             .route("/me/weight", post().to(set_weight))
+            .route("/me/entry/first", get().to(first_entry))
+            .route("/me/entry/last", get().to(last_entry))
+            .route("/me/entry", post().to(add_entry))
+            .route("/me/entry", get().to(get_entries))
+            .route("/me/entry/{id}", delete().to(delete_entry))
     }).bind((config.ip_addr, config.port))?.run().await?;
 
     Ok(())

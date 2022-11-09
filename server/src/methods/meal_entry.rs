@@ -1,22 +1,22 @@
 use actix_web::{HttpRequest, Responder};
-use actix_web::web::{Json, Query};
+use actix_web::web::{Json, Path, Query};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
-use crate::errors::INVALID_WEIGHT;
-use crate::methods::consts::*;
 use crate::methods::{error_resp, ExtDb, get_user_id, success_resp};
-use crate::models::network::{request, response};
+use crate::models::db;
 use crate::utils::AppError;
+use crate::methods::*;
+use crate::models::network::{request, response};
 
 #[derive(Debug, Deserialize, Default)]
-pub struct WeightQuery {
+pub struct EntryQuery {
     pub start: DateTime<Utc>,
     pub end: DateTime<Utc>,
 }
 
-pub async fn get_weights(
+pub async fn get_entries(
     request: HttpRequest,
-    params: Query<WeightQuery>,
+    params: Query<EntryQuery>,
     db: ExtDb,
 ) -> Result<impl Responder, AppError> {
     let mut conn = db.acquire().await?;
@@ -26,8 +26,8 @@ pub async fn get_weights(
         Err(num) => return Ok(error_resp(vec![num]))
     };
 
-    let results: Vec<(f32, DateTime<Utc>)> = sqlx::query_as(&format!(
-        "SELECT {COL_KGS}, {COL_DATE} FROM {TABLE_WEIGHT} WHERE {COL_USER_ID} = $1 AND {COL_DATE} >= $2 AND {COL_DATE} <= $3 ORDER BY {COL_DATE}"
+    let results: Vec<db::MealEntry> = sqlx::query_as(&format!(
+        "SELECT * FROM {TABLE_MEAL_ENTRY} WHERE {COL_USER_ID} = $1 AND {COL_DATE} >= $2 AND {COL_DATE} <= $3 ORDER BY {COL_DATE}"
     ))
         .bind(user_id)
         .bind(params.start)
@@ -35,14 +35,18 @@ pub async fn get_weights(
         .fetch_all(&mut conn)
         .await?;
 
-    let map: Vec<response::Weight> = results.into_iter()
-        .map(|(kgs, date)| response::Weight {kgs, date})
-        .collect();
+    let mut entries = vec![];
 
-    Ok(success_resp(map))
+    for result in results {
+        if let Ok(entry) = result.into_response() {
+            entries.push(entry);
+        }
+    }
+
+    Ok(success_resp(entries))
 }
 
-pub async fn last_weight(
+pub async fn first_entry(
     request: HttpRequest,
     db: ExtDb,
 ) -> Result<impl Responder, AppError> {
@@ -53,19 +57,23 @@ pub async fn last_weight(
         Err(num) => return Ok(error_resp(vec![num]))
     };
 
-    let results: Option<(f32, DateTime<Utc>)> = sqlx::query_as(&format!(
-        "SELECT {COL_KGS}, {COL_DATE} FROM {TABLE_WEIGHT} WHERE {COL_USER_ID} = $1 ORDER BY {COL_DATE} DESC LIMIT 1"
+    let result: Option<db::MealEntry> = sqlx::query_as(&format!(
+        "SELECT * FROM {TABLE_MEAL_ENTRY} WHERE {COL_USER_ID} = $1 ORDER BY {COL_DATE} ASC LIMIT 1"
     ))
         .bind(user_id)
         .fetch_optional(&mut conn)
         .await?;
 
-    let reading = results.map(|(kgs, date)| response::Weight { kgs, date });
-
-    Ok(success_resp(reading))
+    match result.map(|db| db.into_response()) {
+        Some(result) => match result {
+            Ok(entry) => Ok(success_resp(entry)),
+            Err(err) => Ok(error_resp(vec![err]))
+        }
+        None => Ok(success_resp(None::<response::MealEntry>))
+    }
 }
 
-pub async fn first_weight(
+pub async fn last_entry(
     request: HttpRequest,
     db: ExtDb,
 ) -> Result<impl Responder, AppError> {
@@ -76,21 +84,25 @@ pub async fn first_weight(
         Err(num) => return Ok(error_resp(vec![num]))
     };
 
-    let results: Option<(f32, DateTime<Utc>)> = sqlx::query_as(&format!(
-        "SELECT {COL_KGS}, {COL_DATE} FROM {TABLE_WEIGHT} WHERE {COL_USER_ID} = $1 ORDER BY {COL_DATE} ASC LIMIT 1"
+    let result: Option<db::MealEntry> = sqlx::query_as(&format!(
+        "SELECT * FROM {TABLE_MEAL_ENTRY} WHERE {COL_USER_ID} = $1 ORDER BY {COL_DATE} DESC LIMIT 1"
     ))
         .bind(user_id)
         .fetch_optional(&mut conn)
         .await?;
 
-    let reading = results.map(|(kgs, date)| response::Weight { kgs, date });
-
-    Ok(success_resp(reading))
+    match result.map(|db| db.into_response()) {
+        Some(result) => match result {
+            Ok(entry) => Ok(success_resp(entry)),
+            Err(err) => Ok(error_resp(vec![err]))
+        }
+        None => Ok(success_resp(None::<response::MealEntry>))
+    }
 }
 
-pub async fn delete_weight(
+pub async fn add_entry(
     request: HttpRequest,
-    date: Query<DateTime<Utc>>,
+    body: Json<request::MealEntry>,
     db: ExtDb,
 ) -> Result<impl Responder, AppError> {
     let mut conn = db.acquire().await?;
@@ -100,18 +112,23 @@ pub async fn delete_weight(
         Err(num) => return Ok(error_resp(vec![num]))
     };
 
-    sqlx::query(&format!("DELETE FROM {TABLE_WEIGHT} WHERE {COL_USER_ID} = $1 AND {COL_DATE} = $2"))
+    sqlx::query(&format!("INSERT INTO {TABLE_MEAL_ENTRY} ({COL_USER_ID},{COL_ENTRY_ID},{COL_IS_MEAL},{COL_DATE},{COL_AMOUNT},{COL_CALORIES},{COL_MEAL_TIME}) VALUES ($1,$2,$3,$4,$5,$6,$7)"))
         .bind(user_id)
-        .bind(date.into_inner())
+        .bind(body.food_id)
+        .bind(body.is_meal)
+        .bind(body.date)
+        .bind(body.grams as i32)
+        .bind(body.calories as i32)
+        .bind(body.meal_time.to_string())
         .execute(&mut conn)
         .await?;
 
     Ok(success_resp(0))
 }
 
-pub async fn set_weight(
+pub async fn delete_entry(
     request: HttpRequest,
-    body: Json<request::Weight>,
+    id: Path<u64>,
     db: ExtDb,
 ) -> Result<impl Responder, AppError> {
     let mut conn = db.acquire().await?;
@@ -121,14 +138,9 @@ pub async fn set_weight(
         Err(num) => return Ok(error_resp(vec![num]))
     };
 
-    if body.amount <= 0.0 {
-        return Ok(error_resp(vec![INVALID_WEIGHT]));
-    }
-
-    sqlx::query(&format!("INSERT INTO {TABLE_WEIGHT} ({COL_USER_ID},{COL_KGS},{COL_DATE}) VALUES ($1,$2,$3)"))
+    sqlx::query(&format!("DELETE FROM {TABLE_MEAL_ENTRY} WHERE {COL_USER_ID} = $1 AND {COL_ID} = $2"))
         .bind(user_id)
-        .bind(body.amount)
-        .bind(body.date)
+        .bind(id.into_inner() as i64)
         .execute(&mut conn)
         .await?;
 

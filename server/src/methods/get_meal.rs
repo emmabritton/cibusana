@@ -56,7 +56,7 @@ pub struct MealSearch {
 }
 
 impl MealQuery {
-    pub fn into_search(&self) -> Result<MealSearch, Vec<ErrorNum>> {
+    pub fn to_search(&self) -> Result<MealSearch, Vec<ErrorNum>> {
         let mut errors = HashSet::new();
 
         let mut include_flags = vec![];
@@ -286,7 +286,7 @@ pub async fn meal(
     params: Query<MealQuery>,
     db: ExtDb,
 ) -> Result<impl Responder, AppError> {
-    let result = params.into_search();
+    let result = params.to_search();
     if let Err(nums) = result {
         return Ok(error_resp(nums));
     }

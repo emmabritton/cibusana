@@ -69,7 +69,7 @@ pub struct FoodSearch {
 }
 
 impl FoodQuery {
-    pub fn into_search(&self) -> Result<FoodSearch, Vec<ErrorNum>> {
+    pub fn to_search(&self) -> Result<FoodSearch, Vec<ErrorNum>> {
         let mut errors = HashSet::new();
 
         let cat = if let Some(text) = &self.category {
@@ -84,7 +84,7 @@ impl FoodQuery {
         };
 
         let subcat = if let Some(text) = &self.subcategory {
-            if let Ok(subcat) = FoodSubCategory::from_str(&text) {
+            if let Ok(subcat) = FoodSubCategory::from_str(text) {
                 if self.category.is_none() {
                     errors.insert(INVALID_FILTER_CATEGORY);
                     None
@@ -202,7 +202,7 @@ impl FoodQuery {
 
         if errors.is_empty() {
             Ok(FoodSearch {
-                page: self.page.clone(),
+                page: self.page,
                 company: self.company.clone(),
                 range: self.range.clone(),
                 category: cat,
@@ -353,7 +353,7 @@ pub async fn food(
     params: Query<FoodQuery>,
     db: ExtDb,
 ) -> Result<impl Responder, AppError> {
-    let result = &params.into_search();
+    let result = &params.to_search();
     if let Err(nums) = result {
         return Ok(error_resp(nums.clone()));
     }
@@ -368,40 +368,10 @@ pub async fn food(
     let result: Vec<db::Food> = query.fetch_all(&mut conn).await?;
     let mut output: Vec<response::Food> = vec![];
     for item in result {
+        //TODO handle errors?
         if let Ok(food) = item.try_into() {
             output.push(food);
         }
     }
     Ok(success_page_resp(page, output))
 }
-
-// pub async fn submit_food(
-//     Json(payload): Json<RequestWrapper<request::Food>>,
-//     Extension(db): ExtDb,
-// ) -> Result<impl IntoResponse, AppError> {
-//     let result = payload.validate();
-//     if result.is_err() {
-//         return Ok(error_resp(result.unwrap_err()));
-//     }
-//     let (token, content) = result.unwrap();
-//
-//     let mut conn = db.acquire().await?;
-//
-//     match is_valid_user(&mut conn, token.clone()).await {
-//         Ok(is_valid) => if !is_valid {
-//             return Ok(error_resp(vec![INVALID_USER]));
-//         }
-//         Err(err) => {
-//             error!("{}", err);
-//             return Ok(error_resp(vec![SERVER_ERROR]));
-//         }
-//     }
-//
-//     //check if token is valid
-//     match content.try_into_db(token) {
-//         Err(errors) => return Ok(error_resp(errors.clone())),
-//         Ok(food) => {
-//
-//         }
-//     }
-// }
