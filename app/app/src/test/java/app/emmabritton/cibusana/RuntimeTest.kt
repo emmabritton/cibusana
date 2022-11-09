@@ -1,6 +1,5 @@
 package app.emmabritton.cibusana
 
-import app.emmabritton.cibusana.LoginResponse
 import app.emmabritton.cibusana.flow.home.HomeState
 import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.LoginState
@@ -31,8 +30,6 @@ import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.*
 import kotlin.test.assertEquals
-
-typealias LoginResponse = String
 
 open class RuntimeTest {
     protected lateinit var server: MockWebServer
