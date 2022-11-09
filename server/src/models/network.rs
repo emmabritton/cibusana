@@ -3,6 +3,8 @@ pub mod request {
     use serde::Deserialize;
     use std::collections::HashMap;
     use chrono::{DateTime, Utc};
+    use uuid::Uuid;
+    use crate::constants::MealTime;
 
     #[derive(Debug, Deserialize)]
     pub struct Register {
@@ -37,11 +39,21 @@ pub mod request {
         pub category: Option<String>,
         pub sub_category: Option<String>,
     }
+
+    #[derive(Debug, Deserialize)]
+    pub struct MealEntry {
+        pub food_id: Uuid,
+        pub is_meal: bool,
+        pub meal_time: MealTime,
+        pub date: DateTime<Utc>,
+        pub grams: u32,
+        pub calories: u32
+    }
 }
 
 /// Models only used in responses
 pub mod response {
-    use crate::constants::{Allergen, Cuisine, Flag};
+    use crate::constants::{Allergen, Cuisine, Flag, MealTime};
     use serde::Serialize;
     use std::collections::HashMap;
     use chrono::{DateTime, Utc};
@@ -110,5 +122,16 @@ pub mod response {
         pub date: DateTime<Utc>,
         #[serde(rename="a")]
         pub kgs: f32
+    }
+
+    #[derive(Debug, Serialize)]
+    pub struct MealEntry {
+        pub id: u64,
+        pub food_id: Uuid,
+        pub is_meal: bool,
+        pub meal_time: MealTime,
+        pub date: DateTime<Utc>,
+        pub grams: u32,
+        pub calories: u32
     }
 }

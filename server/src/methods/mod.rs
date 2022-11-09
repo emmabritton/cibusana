@@ -58,6 +58,11 @@ mod consts {
     pub const COL_PROTEIN_TOTAL: &str = "protein_total";
     pub const COL_KGS: &str = "kgs";
     pub const COL_DATE: &str = "date";
+    pub const COL_AMOUNT: &str = "amount";
+    pub const COL_IS_MEAL: &str = "is_meal";
+    pub const COL_ENTRY_ID: &str = "entry_id";
+    pub const COL_MEAL_TIME: &str = "meal_time";
+    pub const COL_CALORIES: &str = "calories";
 
     pub const TOKEN_HEADER: &str = "x-token";
 }
@@ -120,16 +125,4 @@ fn success_resp<T: Serialize>(content: T) -> HttpResponse {
 fn success_page_resp<T: Serialize>(page: usize, content: Vec<T>) -> HttpResponse {
     HttpResponse::Ok()
         .json(ResponseWrapper::content(PageWrapper::new(page, content)))
-}
-
-async fn is_valid_user(conn: &mut PoolConnection<Postgres>, token: Uuid) -> Result<bool> {
-    let row = sqlx::query(&format!(
-        "SELECT {} WHERE {} = $1",
-        consts::COL_ID,
-        consts::COL_ID
-    ))
-        .bind(token)
-        .fetch_optional(conn)
-        .await?;
-    Ok(row.is_some())
 }

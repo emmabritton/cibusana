@@ -48,12 +48,15 @@ pub struct Food {
 }
 
 #[derive(Debug, sqlx::FromRow)]
-pub struct UserEntry {
-    pub id: u64,
+pub struct MealEntry {
+    pub id: i64,
     pub user_id: Uuid,
-    pub food_id: Uuid,
+    pub entry_id: Uuid,
+    pub is_meal: bool,
     pub meal_time: MealTime,
     pub date: DateTime<Utc>,
+    pub amount: i32,
+    pub calories: i32
 }
 
 #[derive(Debug, sqlx::FromRow)]

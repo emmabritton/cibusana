@@ -3,7 +3,6 @@ use crate::constants::{Allergen, Flag};
 use crate::errors::*;
 use crate::models::db;
 use crate::models::db::MeasureUnit;
-use crate::models::network::response::MealIngredient;
 use crate::models::network::{request, response};
 use chrono::Utc;
 use std::collections::HashMap;
@@ -11,8 +10,22 @@ use std::num::TryFromIntError;
 use std::str::FromStr;
 use uuid::Uuid;
 
+impl db::MealEntry {
+    pub fn into_response(self) -> Result<response::MealEntry, ErrorNum> {
+        Ok(response::MealEntry {
+            id: u64::try_from(self.id).map_err(|_| INVALID_ID)?,
+            food_id: self.entry_id,
+            is_meal: self.is_meal,
+            meal_time: self.meal_time,
+            date: self.date,
+            grams: u32::try_from(self.amount).map_err(|_| INVALID_GRAMS)?,
+            calories: u32::try_from(self.calories).map_err(|_| INVALID_CALORIES)?,
+        })
+    }
+}
+
 impl db::Meal {
-    pub(crate) fn into_response(
+    pub fn into_response(
         self,
         ingredients: &HashMap<Uuid, (String, Option<String>, Vec<String>)>,
     ) -> Result<response::Meal, ErrorNum> {
@@ -36,7 +49,7 @@ impl db::Meal {
             .zip(self.food_ids)
             .map(|(amount, id)| {
                 if let Some(ingredient) = ingredients.get(&id) {
-                    Ok(MealIngredient {
+                    Ok(response::MealIngredient {
                         id,
                         name: ingredient.0.clone(),
                         company: ingredient.1.clone(),
@@ -47,9 +60,9 @@ impl db::Meal {
                     Err(INVALID_INGREDIENT)
                 }
             })
-            .collect::<Vec<Result<MealIngredient, ErrorNum>>>()
+            .collect::<Vec<Result<response::MealIngredient, ErrorNum>>>()
             .into_iter()
-            .collect::<Result<Vec<MealIngredient>, ErrorNum>>()?;
+            .collect::<Result<Vec<response::MealIngredient>, ErrorNum>>()?;
         Ok(response::Meal {
             id: self.id,
             name: self.name,
