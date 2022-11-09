@@ -16,7 +16,7 @@ internal interface FoodApi {
         @Query("name") partialName: String?
     ): Call<ResponseWrapper<PageWrapper<FoodResponse>>>
 
-    @GET("/food/:id")
+    @GET("/food/{id}")
     fun food(
         @Path("id") id: UUID
     ): Call<ResponseWrapper<FoodResponse?>>

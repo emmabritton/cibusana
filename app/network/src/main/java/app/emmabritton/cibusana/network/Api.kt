@@ -5,6 +5,7 @@ import app.emmabritton.cibusana.network.apis.FoodApi
 import app.emmabritton.cibusana.network.apis.MeApi
 import app.emmabritton.cibusana.network.apis.UserApi
 import app.emmabritton.cibusana.network.models.LoginRequest
+import app.emmabritton.cibusana.network.models.MealEntryRequest
 import app.emmabritton.cibusana.network.models.RegisterRequest
 import app.emmabritton.cibusana.network.models.WeightRequest
 import java.time.ZonedDateTime
@@ -44,7 +45,17 @@ class Api internal constructor(
 
     fun getFirstWeight(token: UUID) = executeOptionalRequest(logger, meApi.firstWeight(token))
     fun getLastWeight(token: UUID) = executeOptionalRequest(logger, meApi.lastWeight(token))
+    fun deleteWeight(token: UUID, date: ZonedDateTime) = executeRequest(logger, meApi.weight(token, date))
 
-    fun setWeight(token: UUID, kgs: Float, date: ZonedDateTime) =
+    fun getFirstEntry(token: UUID) = executeOptionalRequest(logger, meApi.firstEntry(token))
+    fun getLastEntry(token: UUID) = executeOptionalRequest(logger, meApi.lastEntry(token))
+    fun deleteEntry(token: UUID, id: Long) = executeRequest(logger, meApi.entry(token, id))
+    fun getEntries(token: UUID, start: ZonedDateTime, end: ZonedDateTime) =
+        executeRequest(logger, meApi.entry(token, start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME), end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+
+    fun addEntry(token: UUID, request: MealEntryRequest) =
+        executeRequest(logger, meApi.entry(token, request))
+
+    fun addWeight(token: UUID, kgs: Float, date: ZonedDateTime) =
         executeRequest(logger, meApi.weight(token, WeightRequest(kgs, date)))
 }

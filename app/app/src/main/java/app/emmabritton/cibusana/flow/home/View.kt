@@ -6,6 +6,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import app.emmabritton.cibusana.flow.entry.EntryAction
 import app.emmabritton.cibusana.flow.foodList.FoodAction
 import app.emmabritton.cibusana.flow.weight.WeightAction
 import app.emmabritton.cibusana.system.AppState
@@ -28,6 +29,10 @@ fun HomeUi(
 
         Button({actionReceiver.receive(WeightAction.Show)}) {
             Text("View weight")
+        }
+
+        Button({actionReceiver.receive(EntryAction.Show)}) {
+            Text("View entries")
         }
     }
 }
