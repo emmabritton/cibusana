@@ -1,5 +1,6 @@
 package app.emmabritton.cibusana.flow.weight
 
+import app.emmabritton.cibusana.network.models.WeightResponse
 import app.emmabritton.system.Action
 import java.time.ZonedDateTime
 
@@ -14,7 +15,7 @@ sealed class WeightAction(val stateValidator: (WeightState?) -> Boolean) : Actio
     class UserChangedAmount(val amount: String): WeightAction(viewingOnly)
     class UserChangedStartDate(val date: ZonedDateTime) : WeightAction(viewingOnly)
     class UserChangedEndDate(val date: ZonedDateTime) : WeightAction(viewingOnly)
-    class ReplaceWeight(val weights: Map<ZonedDateTime, Float>) : WeightAction(loadingOnly)
+    class ReplaceWeight(val weights: List<WeightResponse>) : WeightAction(loadingOnly)
     class SearchRejected(val errors: List<Int>) : WeightAction(loadingOnly)
     class SubmitWeightRejected(val errors: List<Int>) : WeightAction(loadingOnly)
 }

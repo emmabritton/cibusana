@@ -1,5 +1,6 @@
 package app.emmabritton.cibusana.flow.weight
 
+import app.emmabritton.cibusana.network.models.WeightResponse
 import app.emmabritton.cibusana.system.AppEffect
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.InvalidState
@@ -57,8 +58,8 @@ fun reduceWeightAction(action: WeightAction, state: AppState): AppEffect {
         }
         WeightAction.SubmitSuccess -> {
             val viewing = (state.uiState as WeightState.Loading).toViewing()
-            val weights = viewing.weights.toMutableMap()
-            weights[viewing.newDate] = viewing.newAmount
+            val weights = viewing.weights.toMutableList()
+            weights.add(WeightResponse(viewing.newAmount, viewing.newDate))
             AppEffect(
                 state.copy(uiState = viewing.copy(weights = weights)),
                 emptyList()

@@ -1,5 +1,6 @@
 package app.emmabritton.cibusana.flow.weight
 
+import app.emmabritton.cibusana.network.models.WeightResponse
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
 import java.time.ZonedDateTime
@@ -12,7 +13,7 @@ data class Range(val start: ZonedDateTime, val end: ZonedDateTime) {
 
 sealed class WeightState(override val config: UiStateConfig) : UiState {
     data class Viewing(
-        val weights: Map<ZonedDateTime, Float>,
+        val weights: List<WeightResponse>,
         val range: Range,
         val newAmount: Float,
         val newDate: ZonedDateTime
@@ -21,7 +22,7 @@ sealed class WeightState(override val config: UiStateConfig) : UiState {
         fun toLoading() = Loading(this)
 
         companion object {
-            fun init() = Viewing(emptyMap(), Range.init(), 100f, ZonedDateTime.now())
+            fun init() = Viewing(emptyList(), Range.init(), 100f, ZonedDateTime.now())
         }
     }
 

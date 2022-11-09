@@ -15,8 +15,8 @@ class GetWeightForRange(private val range: Range) : Command {
             range.start.withHour(0).withMinute(0).withSecond(0),
             range.end.withHour(23).withMinute(59).withSecond(59)
         )
-            .onSuccess {
-                actionReceiver.receive(WeightAction.ReplaceWeight(it))
+            .onSuccess { list ->
+                actionReceiver.receive(WeightAction.ReplaceWeight(list.sortedBy { it.date }))
             }
             .onFailure {
                 actionReceiver.receive(WeightAction.SearchRejected(it.errorCodes()))

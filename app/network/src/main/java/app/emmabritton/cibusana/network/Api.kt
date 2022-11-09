@@ -4,10 +4,12 @@ import app.emmabritton.cibusana.network.apis.DataApi
 import app.emmabritton.cibusana.network.apis.FoodApi
 import app.emmabritton.cibusana.network.apis.MeApi
 import app.emmabritton.cibusana.network.apis.UserApi
-import app.emmabritton.cibusana.network.models.*
+import app.emmabritton.cibusana.network.models.LoginRequest
+import app.emmabritton.cibusana.network.models.RegisterRequest
+import app.emmabritton.cibusana.network.models.WeightRequest
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.UUID
+import java.util.*
 
 internal const val HEADER_TOKEN = "x-token"
 
@@ -39,6 +41,9 @@ class Api internal constructor(
 
     fun getWeights(token: UUID, start: ZonedDateTime, end: ZonedDateTime) =
         executeRequest(logger, meApi.weight(token, start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME), end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+
+    fun getFirstWeight(token: UUID) = executeOptionalRequest(logger, meApi.firstWeight(token))
+    fun getLastWeight(token: UUID) = executeOptionalRequest(logger, meApi.lastWeight(token))
 
     fun setWeight(token: UUID, kgs: Float, date: ZonedDateTime) =
         executeRequest(logger, meApi.weight(token, WeightRequest(kgs, date)))

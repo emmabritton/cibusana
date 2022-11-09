@@ -52,8 +52,8 @@ private fun ViewingUi(weightState: WeightState.Viewing, actionReceiver: ActionRe
             }
         }
         LazyColumn(Modifier.fillMaxSize()) {
-            items(weightState.weights.toList()) {
-                Text("${it.first.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)} ${it.second}kg", modifier = Modifier.padding(Padding.Small))
+            items(weightState.weights) {
+                Text("${it.date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)} ${it.amount}kg", modifier = Modifier.padding(Padding.Small))
             }
         }
     }
