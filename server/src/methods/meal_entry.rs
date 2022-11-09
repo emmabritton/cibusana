@@ -112,7 +112,7 @@ pub async fn add_entry(
         Err(num) => return Ok(error_resp(vec![num]))
     };
 
-    sqlx::query(&format!("INSERT INTO {TABLE_MEAL_ENTRY} ({COL_USER_ID},{COL_ENTRY_ID},{COL_IS_MEAL},{COL_DATE},{COL_AMOUNT},{COL_CALORIES},{COL_MEAL_TIME}) VALUES ($1,$2,$3,$4,$5,$6,$7)"))
+    let id: i64 = sqlx::query_scalar(&format!("INSERT INTO {TABLE_MEAL_ENTRY} ({COL_USER_ID},{COL_ENTRY_ID},{COL_IS_MEAL},{COL_DATE},{COL_AMOUNT},{COL_CALORIES},{COL_MEAL_TIME}) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING {COL_ID}"))
         .bind(user_id)
         .bind(body.food_id)
         .bind(body.is_meal)
@@ -120,10 +120,10 @@ pub async fn add_entry(
         .bind(body.grams as i32)
         .bind(body.calories as i32)
         .bind(body.meal_time.to_string())
-        .execute(&mut conn)
+        .fetch_one(&mut conn)
         .await?;
 
-    Ok(success_resp(0))
+    Ok(success_resp(id as u64))
 }
 
 pub async fn delete_entry(
