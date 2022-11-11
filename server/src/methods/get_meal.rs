@@ -5,14 +5,14 @@ use crate::methods::{error_resp, success_page_resp, success_resp, ExtDb};
 use crate::models::db;
 use crate::models::network::response;
 use crate::utils::AppError;
+use actix_web::web::{Path, Query};
+use actix_web::Responder;
 use log::trace;
 use serde::Deserialize;
 use sqlx::{Postgres, QueryBuilder};
 use std::collections::{HashMap, HashSet};
 use std::ops::Range;
 use std::str::FromStr;
-use actix_web::Responder;
-use actix_web::web::{Path, Query};
 use uuid::Uuid;
 
 const MIN_MAX_CALORIES: u32 = 100;
@@ -282,10 +282,7 @@ fn make_ingredient_query<'a>(
     builder
 }
 
-pub async fn meal(
-    params: Query<MealQuery>,
-    db: ExtDb,
-) -> Result<impl Responder, AppError> {
+pub async fn meal(params: Query<MealQuery>, db: ExtDb) -> Result<impl Responder, AppError> {
     let result = params.to_search();
     if let Err(nums) = result {
         return Ok(error_resp(nums));
@@ -324,10 +321,7 @@ pub async fn meal(
     Ok(success_page_resp(page, output))
 }
 
-pub async fn exact_meal(
-    id: Path<Uuid>,
-    db: ExtDb,
-) -> Result<impl Responder, AppError> {
+pub async fn exact_meal(id: Path<Uuid>, db: ExtDb) -> Result<impl Responder, AppError> {
     let mut conn = db.acquire().await?;
     let meal: Option<db::Meal> = sqlx::query_as(&format!(
         "SELECT * FROM {TABLE_MEAL} WHERE {COL_ID} = $1 AND hidden = false"

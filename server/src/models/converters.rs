@@ -1,14 +1,36 @@
-use crate::constants::categories::{FoodCategory, FoodSubCategory};
 use crate::constants::{Allergen, Flag};
 use crate::errors::*;
 use crate::models::db;
 use crate::models::db::MeasureUnit;
 use crate::models::network::{request, response};
-use chrono::Utc;
 use std::collections::HashMap;
 use std::num::TryFromIntError;
 use std::str::FromStr;
 use uuid::Uuid;
+
+impl db::Measurement {
+    pub fn into_response(self) -> response::Measurement {
+        response::Measurement {
+            date: self.date,
+            measurements: self
+                .m_names
+                .into_iter()
+                .zip(self.m_values.into_iter())
+                .collect(),
+        }
+    }
+}
+
+impl request::Measurement {
+    pub fn to_db(&self, user_id: Uuid) -> db::Measurement {
+        db::Measurement {
+            user_id,
+            date: self.date,
+            m_names: self.measurements.keys().cloned().collect(),
+            m_values: self.measurements.values().cloned().collect(),
+        }
+    }
+}
 
 impl db::MealEntry {
     pub fn into_response(self) -> Result<response::MealEntry, ErrorNum> {
@@ -132,109 +154,109 @@ impl TryFrom<db::Food> for response::Food {
     }
 }
 
-impl request::Food {
-    pub fn try_into_db(self, token: Uuid) -> Result<db::Food, Vec<ErrorNum>> {
-        let mut errors = vec![];
-        let mut id: Uuid = Uuid::default();
-        let mut name: String = String::default();
-        let mut calories_p100: i32 = 0;
-        let mut carbs_p100: f32 = 0.0;
-        let mut fat_p100: f32 = 0.0;
-        let mut protein_p100: f32 = 0.0;
-        let mut company: Option<String> = None;
-        let mut range: Option<String> = None;
-        let mut category: FoodCategory = FoodCategory::Other;
-        let mut sub_category: FoodSubCategory = FoodSubCategory::Other;
-        if let Some(id_str) = self.id {
-            if let Ok(req_id) = Uuid::try_from(id_str.as_str()) {
-                id = req_id;
-            } else {
-                errors.push(ID_EMPTY);
-            }
-        } else {
-            errors.push(ID_EMPTY);
-        }
-        if let Some(name_str) = self.name {
-            let trimmed = name_str.trim();
-            if !trimmed.is_empty() {
-                name = trimmed.to_string();
-            } else {
-                errors.push(NAME_EMPTY);
-            }
-        } else {
-            errors.push(NAME_EMPTY);
-        }
-        if let Some(company_str) = self.company {
-            company = Some(company_str)
-        }
-        if let Some(range_str) = self.range {
-            range = Some(range_str)
-        }
-        if let Some(cat_str) = self.category {
-            if let Ok(cat) = FoodCategory::try_from(cat_str.as_str()) {
-                category = cat;
-            } else {
-                errors.push(CATEGORY_INVALID);
-            }
-        } else {
-            errors.push(CATEGORY_EMPTY);
-        }
-        if let Some(subcat_str) = self.sub_category {
-            if let Ok(subcat) = FoodSubCategory::try_from(subcat_str.as_str()) {
-                if category.sub_cats().contains(&subcat) {
-                    sub_category = subcat;
-                } else {
-                    errors.push(SUBCATEGORY_MISMATCH);
-                }
-            } else {
-                errors.push(SUBCATEGORY_INVALID);
-            }
-        } else {
-            errors.push(SUBCATEGORY_EMPTY);
-        }
-        if let Some(cals) = self.calories_p100 {
-            calories_p100 = cals as i32;
-        } else {
-            errors.push(CALORIES_EMPTY);
-        }
-        if let Some(carbs) = self.carbs_p100 {
-            carbs_p100 = carbs;
-        } else {
-            errors.push(CARBS_EMPTY);
-        }
-        if let Some(fat) = self.fat_p100 {
-            fat_p100 = fat;
-        } else {
-            errors.push(FAT_EMPTY);
-        }
-        if let Some(protein) = self.protein_p100 {
-            protein_p100 = protein;
-        } else {
-            errors.push(PROTEIN_EMPTY);
-        }
-
-        if !errors.is_empty() {
-            return Err(errors);
-        }
-
-        Ok(db::Food {
-            id,
-            name,
-            created_by: token,
-            created_at: Utc::now(),
-            calories_p100,
-            carbs_p100,
-            fat_p100,
-            protein_p100,
-            serving_size: vec![],
-            serving_size_name: vec![],
-            range,
-            company,
-            flavors: vec![],
-            category,
-            sub_category,
-            allergens: vec![],
-            flags: vec![],
-        })
-    }
-}
+// impl request::Food {
+//     pub fn into_db(self, token: Uuid) -> Result<db::Food, Vec<ErrorNum>> {
+//         let mut errors = vec![];
+//         let mut id: Uuid = Uuid::default();
+//         let mut name: String = String::default();
+//         let mut calories_p100: i32 = 0;
+//         let mut carbs_p100: f32 = 0.0;
+//         let mut fat_p100: f32 = 0.0;
+//         let mut protein_p100: f32 = 0.0;
+//         let mut company: Option<String> = None;
+//         let mut range: Option<String> = None;
+//         let mut category: FoodCategory = FoodCategory::Other;
+//         let mut sub_category: FoodSubCategory = FoodSubCategory::Other;
+//         if let Some(id_str) = self.id {
+//             if let Ok(req_id) = Uuid::try_from(id_str.as_str()) {
+//                 id = req_id;
+//             } else {
+//                 errors.push(ID_EMPTY);
+//             }
+//         } else {
+//             errors.push(ID_EMPTY);
+//         }
+//         if let Some(name_str) = self.name {
+//             let trimmed = name_str.trim();
+//             if !trimmed.is_empty() {
+//                 name = trimmed.to_string();
+//             } else {
+//                 errors.push(NAME_EMPTY);
+//             }
+//         } else {
+//             errors.push(NAME_EMPTY);
+//         }
+//         if let Some(company_str) = self.company {
+//             company = Some(company_str)
+//         }
+//         if let Some(range_str) = self.range {
+//             range = Some(range_str)
+//         }
+//         if let Some(cat_str) = self.category {
+//             if let Ok(cat) = FoodCategory::try_from(cat_str.as_str()) {
+//                 category = cat;
+//             } else {
+//                 errors.push(CATEGORY_INVALID);
+//             }
+//         } else {
+//             errors.push(CATEGORY_EMPTY);
+//         }
+//         if let Some(subcat_str) = self.sub_category {
+//             if let Ok(subcat) = FoodSubCategory::try_from(subcat_str.as_str()) {
+//                 if category.sub_cats().contains(&subcat) {
+//                     sub_category = subcat;
+//                 } else {
+//                     errors.push(SUBCATEGORY_MISMATCH);
+//                 }
+//             } else {
+//                 errors.push(SUBCATEGORY_INVALID);
+//             }
+//         } else {
+//             errors.push(SUBCATEGORY_EMPTY);
+//         }
+//         if let Some(cals) = self.calories_p100 {
+//             calories_p100 = cals as i32;
+//         } else {
+//             errors.push(CALORIES_EMPTY);
+//         }
+//         if let Some(carbs) = self.carbs_p100 {
+//             carbs_p100 = carbs;
+//         } else {
+//             errors.push(CARBS_EMPTY);
+//         }
+//         if let Some(fat) = self.fat_p100 {
+//             fat_p100 = fat;
+//         } else {
+//             errors.push(FAT_EMPTY);
+//         }
+//         if let Some(protein) = self.protein_p100 {
+//             protein_p100 = protein;
+//         } else {
+//             errors.push(PROTEIN_EMPTY);
+//         }
+//
+//         if !errors.is_empty() {
+//             return Err(errors);
+//         }
+//
+//         Ok(db::Food {
+//             id,
+//             name,
+//             created_by: token,
+//             created_at: Utc::now(),
+//             calories_p100,
+//             carbs_p100,
+//             fat_p100,
+//             protein_p100,
+//             serving_size: vec![],
+//             serving_size_name: vec![],
+//             range,
+//             company,
+//             flavors: vec![],
+//             category,
+//             sub_category,
+//             allergens: vec![],
+//             flags: vec![],
+//         })
+//     }
+// }

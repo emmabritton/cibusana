@@ -11,14 +11,17 @@ use crate::methods::data::{
 };
 use crate::methods::get_food::{exact_food, food};
 use crate::methods::get_meal::{exact_meal, meal};
+use crate::methods::meal_entry::{add_entry, delete_entry, first_entry, get_entries, last_entry};
+use crate::methods::measure::{
+    delete_measure, first_measure, get_measures, last_measure, set_measure,
+};
 use crate::methods::user::{login, register};
+use crate::methods::weight::{delete_weight, first_weight, get_weights, last_weight, set_weight};
+use actix_web::web::{delete, get, post, Data};
+use actix_web::{App, HttpServer};
 use anyhow::Result;
 use dotenvy::dotenv;
 use log::debug;
-use actix_web::{App, HttpServer};
-use actix_web::web::{Data, delete, get, post};
-use crate::methods::meal_entry::{add_entry, delete_entry, first_entry, get_entries, last_entry};
-use crate::methods::weight::{delete_weight, first_weight, get_weights, last_weight, set_weight};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
@@ -62,7 +65,15 @@ async fn main() -> Result<()> {
             .route("/me/entry", post().to(add_entry))
             .route("/me/entry", get().to(get_entries))
             .route("/me/entry/{id}", delete().to(delete_entry))
-    }).bind((config.ip_addr, config.port))?.run().await?;
+            .route("/me/measure/{date}", delete().to(delete_measure))
+            .route("/me/measure/first", get().to(first_measure))
+            .route("/me/measure/last", get().to(last_measure))
+            .route("/me/measure", get().to(get_measures))
+            .route("/me/measure", post().to(set_measure))
+    })
+    .bind((config.ip_addr, config.port))?
+    .run()
+    .await?;
 
     Ok(())
 }

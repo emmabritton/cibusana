@@ -1,23 +1,24 @@
-use std::str::FromStr;
-use crate::models::wrappers::{PageWrapper, ResponseError, ResponseWrapper};
-use anyhow::Result;
-use sqlx::pool::PoolConnection;
-use sqlx::{Pool, Postgres};
-use actix_web::http::header::{CacheControl, CacheDirective, HeaderMap};
-use actix_web::HttpResponse;
-use actix_web::web::Data;
-use log::error;
-use serde::Serialize;
-use uuid::Uuid;
 use crate::errors::{ErrorNum, SERVER_ERROR, TOKEN_EMPTY, TOKEN_INVALID};
 use crate::methods::consts::*;
+use crate::models::wrappers::{PageWrapper, ResponseError, ResponseWrapper};
+use actix_web::http::header::{CacheControl, CacheDirective, HeaderMap};
+use actix_web::web::Data;
+use actix_web::HttpResponse;
+use anyhow::Result;
+use log::error;
+use serde::Serialize;
+use sqlx::pool::PoolConnection;
+use sqlx::{Pool, Postgres};
+use std::str::FromStr;
+use uuid::Uuid;
 
 pub mod data;
 pub mod get_food;
 pub mod get_meal;
+pub mod meal_entry;
+pub mod measure;
 pub mod user;
 pub mod weight;
-pub mod meal_entry;
 
 mod consts {
     pub const TABLE_USERS: &str = r#" "food-app"."users" "#;
@@ -26,6 +27,7 @@ mod consts {
     pub const TABLE_MEAL: &str = r#" "food-app"."meal" "#;
     pub const TABLE_MEAL_ENTRY: &str = r#" "food-app"."meal_entry" "#;
     pub const TABLE_WEIGHT: &str = r#" "food-app"."weight" "#;
+    pub const TABLE_MEASURE: &str = r#" "food-app"."measurement" "#;
 
     pub const COL_EMAIL: &str = "email_address";
     pub const COL_PASS: &str = "password";
@@ -64,6 +66,8 @@ mod consts {
     pub const COL_ENTRY_ID: &str = "entry_id";
     pub const COL_MEAL_TIME: &str = "meal_time";
     pub const COL_CALORIES: &str = "calories";
+    pub const COL_M_VALUES: &str = "m_values";
+    pub const COL_M_NAMES: &str = "m_names";
 
     pub const TOKEN_HEADER: &str = "x-token";
 }
@@ -79,37 +83,40 @@ fn get_user_token(headers: &HeaderMap) -> Result<Uuid, ErrorNum> {
         error!("Reading token: {e}");
         TOKEN_INVALID
     })?;
-    let uuid = Uuid::from_str(text)
-        .map_err(|e| {
-            error!("Parsing token: {e}");
-            TOKEN_INVALID
-        })?;
+    let uuid = Uuid::from_str(text).map_err(|e| {
+        error!("Parsing token: {e}");
+        TOKEN_INVALID
+    })?;
     Ok(uuid)
 }
 
-async fn get_user_id(headers: &HeaderMap, conn: &mut PoolConnection<Postgres>) -> Result<Uuid, ErrorNum> {
+async fn get_user_id(
+    headers: &HeaderMap,
+    conn: &mut PoolConnection<Postgres>,
+) -> Result<Uuid, ErrorNum> {
     let token = get_user_token(headers)?;
 
-    let user_id: Option<Uuid> = sqlx::query_scalar(&format!("SELECT {COL_USER_ID} FROM {TABLE_USER_TOKENS} WHERE {COL_TOKEN} = $1"))
-        .bind(token)
-        .fetch_optional(conn)
-        .await
-        .map_err(|e| {
-            error!("DB Error when getting user id: {e}");
-            SERVER_ERROR
-        })?;
+    let user_id: Option<Uuid> = sqlx::query_scalar(&format!(
+        "SELECT {COL_USER_ID} FROM {TABLE_USER_TOKENS} WHERE {COL_TOKEN} = $1"
+    ))
+    .bind(token)
+    .fetch_optional(conn)
+    .await
+    .map_err(|e| {
+        error!("DB Error when getting user id: {e}");
+        SERVER_ERROR
+    })?;
 
     match user_id {
         None => Err(TOKEN_INVALID),
-        Some(id) => Ok(id)
+        Some(id) => Ok(id),
     }
 }
 
 fn error_resp(error_codes: Vec<i64>) -> HttpResponse {
-    HttpResponse::Ok()
-        .json(ResponseWrapper::<ResponseError>::error(ResponseError::new(
-            error_codes
-        )))
+    HttpResponse::Ok().json(ResponseWrapper::<ResponseError>::error(ResponseError::new(
+        error_codes,
+    )))
 }
 
 fn success_cached_resp<T: Serialize>(content: T) -> HttpResponse {
@@ -119,11 +126,9 @@ fn success_cached_resp<T: Serialize>(content: T) -> HttpResponse {
 }
 
 fn success_resp<T: Serialize>(content: T) -> HttpResponse {
-    HttpResponse::Ok()
-        .json(ResponseWrapper::content(content))
+    HttpResponse::Ok().json(ResponseWrapper::content(content))
 }
 
 fn success_page_resp<T: Serialize>(page: usize, content: Vec<T>) -> HttpResponse {
-    HttpResponse::Ok()
-        .json(ResponseWrapper::content(PageWrapper::new(page, content)))
+    HttpResponse::Ok().json(ResponseWrapper::content(PageWrapper::new(page, content)))
 }

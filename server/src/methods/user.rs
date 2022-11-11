@@ -1,11 +1,11 @@
-use actix_web::Responder;
-use actix_web::web::Json;
 use crate::errors::{EMAIL_ALREADY_TAKEN, INVALID_LOGIN, SERVER_ERROR};
 use crate::methods::consts::*;
 use crate::methods::{error_resp, success_resp, ExtDb};
 use crate::models::db::User;
 use crate::models::network::{request, response};
 use crate::utils::{encrypt, verify, AppError};
+use actix_web::web::Json;
+use actix_web::Responder;
 use log::error;
 use uuid::Uuid;
 
@@ -37,9 +37,9 @@ pub async fn register(
     let row = sqlx::query(&format!(
         "SELECT {COL_ID} FROM {TABLE_USERS} WHERE {COL_EMAIL} = $1"
     ))
-        .bind(user.email.clone())
-        .fetch_optional(&mut conn)
-        .await?;
+    .bind(user.email.clone())
+    .fetch_optional(&mut conn)
+    .await?;
     if row.is_some() {
         Ok(error_resp(vec![EMAIL_ALREADY_TAKEN]))
     } else {
@@ -53,17 +53,14 @@ pub async fn register(
         let uuid = sqlx::query_scalar(&format!(
             "INSERT INTO {TABLE_USER_TOKENS} ({COL_USER_ID}) VALUES ($1) RETURNING {COL_TOKEN}"
         ))
-            .bind(user.id)
-            .fetch_one(&mut conn)
-            .await?;
+        .bind(user.id)
+        .fetch_one(&mut conn)
+        .await?;
         Ok(success_resp(response::Register::new(uuid)))
     }
 }
 
-pub async fn login(
-    payload: Json<request::Login>,
-    db: ExtDb,
-) -> Result<impl Responder, AppError> {
+pub async fn login(payload: Json<request::Login>, db: ExtDb) -> Result<impl Responder, AppError> {
     let errors = payload.validate();
     if !errors.is_empty() {
         return Ok(error_resp(errors.clone()));
@@ -72,17 +69,17 @@ pub async fn login(
     let user: Option<(String, Uuid, String)> = sqlx::query_as(&format!(
         "SELECT {COL_NAME}, {COL_ID}, {COL_PASS} FROM {TABLE_USERS} WHERE {COL_EMAIL} = $1"
     ))
-        .bind(&payload.email)
-        .fetch_optional(&mut conn)
-        .await?;
+    .bind(&payload.email)
+    .fetch_optional(&mut conn)
+    .await?;
     if let Some(user) = user {
         if verify(&payload.password, &user.2) {
             let uuid = sqlx::query_scalar(&format!(
                 "INSERT INTO {TABLE_USER_TOKENS} ({COL_USER_ID}) VALUES ($1) RETURNING {COL_TOKEN}"
             ))
-                .bind(user.1)
-                .fetch_one(&mut conn)
-                .await?;
+            .bind(user.1)
+            .fetch_one(&mut conn)
+            .await?;
             Ok(success_resp(response::Login::new(uuid, user.0)))
         } else {
             Ok(error_resp(vec![INVALID_LOGIN]))

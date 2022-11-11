@@ -1,10 +1,10 @@
-use std::fmt::{Debug, Display, Formatter};
 use actix_web::body::BoxBody;
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, ResponseError};
 use password_hash::rand_core::OsRng;
 use password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 use scrypt::Scrypt;
+use std::fmt::{Debug, Display, Formatter};
 
 pub fn encrypt(password: &str) -> Result<String, String> {
     let salt = SaltString::generate(&mut OsRng);
@@ -24,13 +24,13 @@ pub struct AppError(anyhow::Error);
 
 impl Debug for AppError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f,"{}",self.0)
+        write!(f, "{}", self.0)
     }
 }
 
 impl Display for AppError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f,"{}",self.0)
+        write!(f, "{}", self.0)
     }
 }
 
@@ -40,8 +40,7 @@ impl ResponseError for AppError {
     }
 
     fn error_response(&self) -> HttpResponse<BoxBody> {
-        HttpResponse::Ok()
-            .body(format!("Something went wrong: {}", self.0))
+        HttpResponse::Ok().body(format!("Something went wrong: {}", self.0))
     }
 }
 

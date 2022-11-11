@@ -1,11 +1,11 @@
 use crate::constants::categories::FoodCategory;
 use crate::constants::{Allergen, Cuisine, Flag, MealTime};
-use std::collections::{HashMap, HashSet};
 use actix_web::Responder;
+use std::collections::{HashMap, HashSet};
 use strum::IntoEnumIterator;
 
 use crate::methods::consts::*;
-use crate::methods::{ExtDb, success_cached_resp};
+use crate::methods::{success_cached_resp, ExtDb};
 use crate::utils::AppError;
 
 pub async fn alive() -> impl Responder {

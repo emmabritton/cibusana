@@ -23,7 +23,7 @@ pub struct Weight {
     pub id: u64,
     pub user_id: Uuid,
     pub kgs: f32,
-    pub date: DateTime<Utc>
+    pub date: DateTime<Utc>,
 }
 
 #[derive(Debug, sqlx::FromRow)]
@@ -56,7 +56,15 @@ pub struct MealEntry {
     pub meal_time: MealTime,
     pub date: DateTime<Utc>,
     pub amount: i32,
-    pub calories: i32
+    pub calories: i32,
+}
+
+#[derive(Debug, sqlx::FromRow)]
+pub struct Measurement {
+    pub user_id: Uuid,
+    pub date: DateTime<Utc>,
+    pub m_names: Vec<String>,
+    pub m_values: Vec<f32>,
 }
 
 #[derive(Debug, sqlx::FromRow)]

@@ -1,10 +1,10 @@
 /// Models only used in requests
 pub mod request {
+    use crate::constants::MealTime;
+    use chrono::{DateTime, Utc};
     use serde::Deserialize;
     use std::collections::HashMap;
-    use chrono::{DateTime, Utc};
     use uuid::Uuid;
-    use crate::constants::MealTime;
 
     #[derive(Debug, Deserialize)]
     pub struct Register {
@@ -47,17 +47,29 @@ pub mod request {
         pub meal_time: MealTime,
         pub date: DateTime<Utc>,
         pub grams: u32,
-        pub calories: u32
+        pub calories: u32,
+    }
+
+    #[derive(Debug, Deserialize)]
+    pub struct Measurement {
+        pub date: DateTime<Utc>,
+        pub measurements: HashMap<String, f32>,
     }
 }
 
 /// Models only used in responses
 pub mod response {
     use crate::constants::{Allergen, Cuisine, Flag, MealTime};
+    use chrono::{DateTime, Utc};
     use serde::Serialize;
     use std::collections::HashMap;
-    use chrono::{DateTime, Utc};
     use uuid::Uuid;
+
+    #[derive(Debug, Serialize)]
+    pub struct Measurement {
+        pub date: DateTime<Utc>,
+        pub measurements: HashMap<String, f32>,
+    }
 
     #[derive(Debug, Serialize)]
     pub struct Register {
@@ -118,10 +130,10 @@ pub mod response {
 
     #[derive(Debug, Serialize)]
     pub struct Weight {
-        #[serde(rename="d")]
+        #[serde(rename = "d")]
         pub date: DateTime<Utc>,
-        #[serde(rename="a")]
-        pub kgs: f32
+        #[serde(rename = "a")]
+        pub kgs: f32,
     }
 
     #[derive(Debug, Serialize)]
@@ -132,6 +144,6 @@ pub mod response {
         pub meal_time: MealTime,
         pub date: DateTime<Utc>,
         pub grams: u32,
-        pub calories: u32
+        pub calories: u32,
     }
 }
