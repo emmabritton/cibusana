@@ -20,6 +20,12 @@ class GetEntriesForDay(val date: ZonedDateTime) : Command {
     private val dataController: DataController by KoinJavaComponent.inject(DataController::class.java)
 
     override fun run(actionReceiver: ActionReceiver) {
+        /**
+         * Get a list of entries for a day for a user
+         * Get a list of food/meals referenced in the entries
+         * Get a list of valid meal times
+         * Convert list into map of meal time to food/meal
+         */
         userController.getEntry(date.withStartOfDay(), date.withEndOfDay())
             .onFailure {
                 Timber.e(it, "GetEntriesForDay getEntry")
