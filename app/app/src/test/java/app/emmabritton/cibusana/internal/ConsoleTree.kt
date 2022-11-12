@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana
+package app.emmabritton.cibusana.internal
 
 import android.util.Log
 import org.intellij.lang.annotations.Language

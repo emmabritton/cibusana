@@ -1,12 +1,12 @@
 package app.emmabritton.cibusana.reducer
 
-import app.emmabritton.cibusana.assertUiState
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.flow.login.LoginState
 import app.emmabritton.cibusana.flow.reduce
 import app.emmabritton.cibusana.flow.register.RegisterState
 import app.emmabritton.cibusana.flow.welcome.WelcomeAction
 import app.emmabritton.cibusana.flow.welcome.WelcomeState
+import app.emmabritton.cibusana.internal.assertUiState
 import org.junit.Test
 
 class WelcomeTests {
