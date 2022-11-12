@@ -24,6 +24,7 @@ import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.*
+import kotlin.collections.ArrayDeque
 import kotlin.test.assertEquals
 
 open class RuntimeTest {
@@ -69,9 +70,9 @@ open class RuntimeTest {
         contents(RuntimeScope(runtime, server))
     }
 
-    fun <T, C: UiState> RuntimeScope.skipTo(factory: ScopeFactory<T, C>, contents: T.() -> Unit) {
+    fun <T, C: UiState> RuntimeScope.skipTo(factory: ScopeFactory<T, C>, fakeHistory: List<UiState>, contents: T.() -> Unit) {
         runtime.assertNoGlobalError("Setting default $factory.name state")
-        runtime.state = AppState.init().copy(uiState = factory.uiState)
+        runtime.state = AppState.init().copy(uiState = factory.uiState, uiHistory = ArrayDeque(fakeHistory))
         contents(factory.makeScope(this))
     }
 

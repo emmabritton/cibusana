@@ -14,7 +14,7 @@ data class AppState(
         return if (error != null) {
             "Error: $error"
         } else {
-            uiState.javaClass.simpleName
+            "UiState: ${uiState.javaClass.simpleName}, User: $user, History count: ${uiHistory.size}"
         }
     }
 
