@@ -31,6 +31,11 @@ import timber.log.Timber
 import java.util.*
 import kotlin.test.assertEquals
 
+enum class ScopeType {
+    VERIFY,
+    SKIP_TO
+}
+
 open class RuntimeTest {
     protected lateinit var server: MockWebServer
 
@@ -85,35 +90,38 @@ open class RuntimeTest {
         contents(RuntimeScope(runtime))
     }
 
-    private fun <T: UiState> Runtime.setOrAssertState(name: String, setState: Boolean, testClass: Class<T>, uiState: UiState) {
-        if (setState) {
-            assertNoGlobalError("Setting default $name state")
-            state = AppState.init().copy(uiState = uiState)
-        } else {
-            assertUiState(
-                testClass,
-                "Used $name block without being in $name state "
-            )
+    private fun <T: UiState> Runtime.setOrAssertState(name: String, type: ScopeType, testClass: Class<T>, uiState: UiState) {
+        when (type) {
+            ScopeType.VERIFY -> {
+                assertUiState(
+                    testClass,
+                    "Used $name block without being in $name state "
+                )
+            }
+            ScopeType.SKIP_TO -> {
+                assertNoGlobalError("Setting default $name state")
+                state = AppState.init().copy(uiState = uiState)
+            }
         }
     }
 
-    fun RuntimeScope.splash(setInitState: Boolean = false, contents: SplashScope.() -> Unit) {
-        runtime.setOrAssertState("splash", setInitState, SplashState::class.java, SplashState)
+    fun RuntimeScope.splash(type: ScopeType, contents: SplashScope.() -> Unit) {
+        runtime.setOrAssertState("splash", type, SplashState::class.java, SplashState)
         contents(SplashScope(this))
     }
 
-    fun RuntimeScope.welcome(setInitState: Boolean = false, contents: WelcomeScope.() -> Unit) {
-        runtime.setOrAssertState("welcome", setInitState, WelcomeState::class.java, WelcomeState)
+    fun RuntimeScope.welcome(type: ScopeType, contents: WelcomeScope.() -> Unit) {
+        runtime.setOrAssertState("welcome", type, WelcomeState::class.java, WelcomeState)
         contents(WelcomeScope(this))
     }
 
-    fun RuntimeScope.login(setInitState: Boolean = false, contents: LoginScope.() -> Unit) {
-        runtime.setOrAssertState("login", setInitState, LoginState::class.java, LoginState.Entering.init())
+    fun RuntimeScope.login(type: ScopeType, contents: LoginScope.() -> Unit) {
+        runtime.setOrAssertState("login", type, LoginState::class.java, LoginState.Entering.init())
         contents(LoginScope(this))
     }
 
-    fun RuntimeScope.home(setInitState: Boolean = false, contents: HomeScope.() -> Unit) {
-        runtime.setOrAssertState("home", setInitState, HomeState::class.java, HomeState)
+    fun RuntimeScope.home(type: ScopeType, contents: HomeScope.() -> Unit) {
+        runtime.setOrAssertState("home", type, HomeState::class.java, HomeState)
         contents(HomeScope(this))
     }
 

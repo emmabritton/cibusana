@@ -1,6 +1,9 @@
 package app.emmabritton.cibusana.runtime
 
 import app.emmabritton.cibusana.RuntimeTest
+import app.emmabritton.cibusana.ScopeType
+import app.emmabritton.cibusana.ScopeType.SKIP_TO
+import app.emmabritton.cibusana.ScopeType.VERIFY
 import app.emmabritton.cibusana.persist.models.User
 import org.junit.Test
 import java.util.*
@@ -10,7 +13,7 @@ class LoginTests : RuntimeTest() {
     @Test
     fun `check login with invalid details`() {
         app {
-            login(true) {
+            login(SKIP_TO) {
                 enterInvalidDetailsAndSubmit()
                 assertErrorVisible("103")
                 assertNotLoggedIn()
@@ -22,10 +25,10 @@ class LoginTests : RuntimeTest() {
     fun `check login with valid details`() {
         val testUser = User("Test", UUID.randomUUID())
         app {
-            login(true) {
+            login(SKIP_TO) {
                 enterValidDetailsAndSubmit(testUser)
             }
-            home {
+            home(VERIFY) {
                 assertLoggedIn(testUser)
             }
         }
@@ -35,20 +38,20 @@ class LoginTests : RuntimeTest() {
     fun `test whole app flow from splash to home, with one failed login`() {
         val testUser = User("Test2", UUID.randomUUID())
         app {
-            splash {
+            splash(VERIFY) {
                 init()
             }
-            welcome {
+            welcome(VERIFY) {
                 goToLogin()
             }
-            login {
+            login(VERIFY) {
                 enterInvalidDetailsAndSubmit()
                 assertErrorVisible()
                 clearError()
 
                 enterValidDetailsAndSubmit(testUser)
             }
-            home {
+            home(VERIFY) {
                 assertLoggedIn(testUser)
             }
         }
