@@ -7,6 +7,10 @@ import app.emmabritton.system.State
 data class AppState(
     val error: String?,
     val uiState: UiState,
+    /**
+     * Contains all visited screens the user can return to
+     * (also include the current screen, but this is ignored when going back)
+     */
     val uiHistory: ArrayDeque<UiState>,
     val user: User?
 ) : State {
@@ -43,6 +47,9 @@ data class UiStateConfig(
     /**
      * If true, and the last entry in AppState.uiHistory is the same class
      * then this replaces it
+     *
+     * TODO: Consider ID based duplicate detection so FormScreen#1 can be edited and replace it's duplicated, then open
+     * FormScreen#2 which can be edited, and then return to where #1 was left
      */
     val replaceDuplicate: Boolean,
     /**
@@ -51,9 +58,22 @@ data class UiStateConfig(
     val addToHistory: Boolean
 ) {
     companion object {
+        /**
+         * For screens that should be the first in the history, such a home page
+         */
         fun originScreen() = UiStateConfig(true, true, true, true)
+        /**
+         * For screens that should not be remembered and block the back button
+         * TODO: Change commands cancellable and this can deprecated in favor of tempScreen
+         */
         fun loadingScreen() = UiStateConfig(false, false, true, false)
+        /**
+         * For any other screen
+         */
         fun generalScreen() = UiStateConfig(true, false, true, true)
+        /**
+         * For screens that should not be remembered
+         */
         fun tempScreen() = UiStateConfig(true, false, true, false)
     }
 }

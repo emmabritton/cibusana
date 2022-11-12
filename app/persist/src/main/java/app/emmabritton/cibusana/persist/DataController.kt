@@ -27,6 +27,9 @@ class DataController(private val api: Api, private val logger: Logger) {
             Result.success(list)
         } else {
             apiMethod()
+                .onFailure {
+                    logger.e(it, "DataController getting ${cache.name}")
+                }
                 .map {
                     cache.set(it)
                     it

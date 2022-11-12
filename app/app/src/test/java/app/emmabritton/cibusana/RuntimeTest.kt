@@ -76,7 +76,7 @@ open class RuntimeTest {
         contents(factory.makeScope(this))
     }
 
-    fun <T, C: UiState> RuntimeScope.verifyAt(factory: ScopeFactory<T, C>, contents: T.() -> Unit) {
+    fun <T, C: UiState> RuntimeScope.assertAt(factory: ScopeFactory<T, C>, contents: T.() -> Unit) {
         runtime.assertUiState(
             factory.testClass,
             "Used ${factory.name} block without being in ${factory.name} state "

@@ -28,13 +28,13 @@ class LoginTests : RuntimeTest() {
             }
         }
         app {
-            verifyAt(Splash) {
+            assertAt(Splash) {
                 init()
             }
-            verifyAt(Welcome) {
+            assertAt(Welcome) {
                 goToLogin()
             }
-            verifyAt(Login) {
+            assertAt(Login) {
                 flowState = this@app.runtime.state
             }
         }
@@ -60,7 +60,7 @@ class LoginTests : RuntimeTest() {
             skipTo(Login, skipHistory) {
                 enterValidDetailsAndSubmit(testUser)
             }
-            verifyAt(Home) {
+            assertAt(Home) {
                 assertLoggedIn(testUser)
             }
         }
@@ -77,7 +77,7 @@ class LoginTests : RuntimeTest() {
 
                 enterValidDetailsAndSubmit(testUser)
             }
-            verifyAt(Home) {
+            assertAt(Home) {
                 assertLoggedIn(testUser)
             }
         }
