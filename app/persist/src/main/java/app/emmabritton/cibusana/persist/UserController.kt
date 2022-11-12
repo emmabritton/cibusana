@@ -4,7 +4,7 @@ import app.emmabritton.cibusana.network.Api
 import app.emmabritton.cibusana.network.models.MealEntryRequest
 import app.emmabritton.cibusana.persist.models.User
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 class UserController(private val api: Api, private val prefs: Prefs) {
     fun login(email: String, password: String) = api.login(email, password)
@@ -20,7 +20,7 @@ class UserController(private val api: Api, private val prefs: Prefs) {
 
     fun getFirstEntry() = loggedInRequest { api.getFirstEntry(it) }
     fun getLastEntry() = loggedInRequest { api.getLastEntry(it) }
-    fun getEntry(start: ZonedDateTime, end: ZonedDateTime) = loggedInRequest { api.getEntries(it, start, end) }
+    fun getEntries(start: ZonedDateTime, end: ZonedDateTime) = loggedInRequest { api.getEntries(it, start, end) }
     fun addEntry(entry: MealEntryRequest) = loggedInRequest { api.addEntry(it, entry) }
     fun deleteEntry(id: Long) = loggedInRequest { api.deleteEntry(it, id) }
 

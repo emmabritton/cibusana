@@ -26,7 +26,7 @@ class GetEntriesForDay(val date: ZonedDateTime) : Command {
          * Get a list of valid meal times
          * Convert list into map of meal time to food/meal
          */
-        userController.getEntry(date.withStartOfDay(), date.withEndOfDay())
+        userController.getEntries(date.withStartOfDay(), date.withEndOfDay())
             .onFailure {
                 Timber.e(it, "GetEntriesForDay getEntry")
                 actionReceiver.receive(EntryAction.ServerError)
