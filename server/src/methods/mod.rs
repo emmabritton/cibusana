@@ -28,6 +28,7 @@ mod consts {
     pub const TABLE_MEAL_ENTRY: &str = r#" "food-app"."meal_entry" "#;
     pub const TABLE_WEIGHT: &str = r#" "food-app"."weight" "#;
     pub const TABLE_MEASURE: &str = r#" "food-app"."measurement" "#;
+    pub const TABLE_USER_DATA: &str = r#" "food-app"."user_data" "#;
 
     pub const COL_EMAIL: &str = "email_address";
     pub const COL_PASS: &str = "password";
@@ -59,7 +60,7 @@ mod consts {
     pub const COL_CARBS_TOTAL: &str = "carbs_total";
     pub const COL_FAT_TOTAL: &str = "fat_total";
     pub const COL_PROTEIN_TOTAL: &str = "protein_total";
-    pub const COL_KGS: &str = "kgs";
+    pub const COL_GRAMS: &str = "grams";
     pub const COL_DATE: &str = "date";
     pub const COL_AMOUNT: &str = "amount";
     pub const COL_IS_MEAL: &str = "is_meal";
@@ -68,6 +69,11 @@ mod consts {
     pub const COL_CALORIES: &str = "calories";
     pub const COL_M_VALUES: &str = "m_values";
     pub const COL_M_NAMES: &str = "m_names";
+    pub const COL_HEIGHT: &str = "height";
+    pub const COL_MEASUREMENT_NAMES: &str = "default_measurement_names";
+    pub const COL_UNITS: &str = "preferred_unit";
+    pub const COL_TARGET_WEIGHT: &str = "target_weight_grams";
+    pub const COL_TARGET_DATE: &str = "target_weight_date";
 
     pub const TOKEN_HEADER: &str = "x-token";
 }

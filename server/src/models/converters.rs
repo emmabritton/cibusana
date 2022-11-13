@@ -8,6 +8,31 @@ use std::num::TryFromIntError;
 use std::str::FromStr;
 use uuid::Uuid;
 
+impl request::UserData {
+    pub fn to_db(&self, user_id: Uuid) -> db::UserData {
+        db::UserData {
+            user_id,
+            preferred_unit: self.units,
+            default_measurement_names: self.measurement_names.clone(),
+            target_weight_grams: self.target_weight_grams.map(|value| value as i32),
+            target_weight_date: self.target_weight_date,
+            height: self.height as i32
+        }
+    }
+}
+
+impl db::UserData {
+    pub fn into_response(self) -> response::UserData {
+        response::UserData {
+            units: self.preferred_unit,
+            measurement_names: self.default_measurement_names,
+            target_weight_grams: self.target_weight_grams.map(|value| value as u32),
+            target_weight_date: self.target_weight_date,
+            height: self.height as u32
+        }
+    }
+}
+
 impl db::Measurement {
     pub fn into_response(self) -> response::Measurement {
         response::Measurement {

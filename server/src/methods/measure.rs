@@ -3,7 +3,7 @@ use crate::methods::{error_resp, get_user_id, success_resp, ExtDb};
 use crate::models::db;
 use crate::models::network::{request, response};
 use crate::utils::AppError;
-use actix_web::web::{Json, Query};
+use actix_web::web::{Json, Path, Query};
 use actix_web::{HttpRequest, Responder};
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
@@ -83,7 +83,7 @@ pub async fn first_measure(request: HttpRequest, db: ExtDb) -> Result<impl Respo
 
 pub async fn delete_measure(
     request: HttpRequest,
-    date: Query<DateTime<Utc>>,
+    date: Path<DateTime<Utc>>,
     db: ExtDb,
 ) -> Result<impl Responder, AppError> {
     let mut conn = db.acquire().await?;

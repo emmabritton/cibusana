@@ -1,6 +1,6 @@
 /// Models only used in requests
 pub mod request {
-    use crate::constants::MealTime;
+    use crate::constants::{MealTime, MeasurementUnit};
     use chrono::{DateTime, Utc};
     use serde::Deserialize;
     use std::collections::HashMap;
@@ -11,6 +11,10 @@ pub mod request {
         pub name: String,
         pub email: String,
         pub password: String,
+        pub units: MeasurementUnit,
+        pub target_weight_grams: Option<u32>,
+        pub target_weight_date: Option<DateTime<Utc>>,
+        pub height: u32
     }
 
     #[derive(Debug, Deserialize)]
@@ -22,7 +26,7 @@ pub mod request {
     #[derive(Debug, Deserialize, Default)]
     pub struct Weight {
         pub date: DateTime<Utc>,
-        pub amount: f32,
+        pub grams: u32,
     }
 
     #[derive(Debug, Deserialize)]
@@ -55,15 +59,33 @@ pub mod request {
         pub date: DateTime<Utc>,
         pub measurements: HashMap<String, f32>,
     }
+
+    #[derive(Debug, Deserialize)]
+    pub struct UserData {
+        pub units: MeasurementUnit,
+        pub measurement_names: Vec<String>,
+        pub target_weight_grams: Option<u32>,
+        pub target_weight_date: Option<DateTime<Utc>>,
+        pub height: u32
+    }
 }
 
 /// Models only used in responses
 pub mod response {
-    use crate::constants::{Allergen, Cuisine, Flag, MealTime};
+    use crate::constants::{Allergen, Cuisine, Flag, MealTime, MeasurementUnit};
     use chrono::{DateTime, Utc};
     use serde::Serialize;
     use std::collections::HashMap;
     use uuid::Uuid;
+
+    #[derive(Debug, Serialize)]
+    pub struct UserData {
+        pub units: MeasurementUnit,
+        pub measurement_names: Vec<String>,
+        pub target_weight_grams: Option<u32>,
+        pub target_weight_date: Option<DateTime<Utc>>,
+        pub height: u32
+    }
 
     #[derive(Debug, Serialize)]
     pub struct Measurement {
@@ -132,8 +154,8 @@ pub mod response {
     pub struct Weight {
         #[serde(rename = "d")]
         pub date: DateTime<Utc>,
-        #[serde(rename = "a")]
-        pub kgs: f32,
+        #[serde(rename = "g")]
+        pub grams: u32,
     }
 
     #[derive(Debug, Serialize)]

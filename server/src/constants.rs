@@ -9,6 +9,16 @@ pub const MIN_PASSWORD_LEN: usize = 8;
 pub const PAGE_SIZE: usize = 50;
 
 #[derive(
+Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize, EnumIter, EnumString, Display, Type,
+)]
+#[sqlx(type_name = "text")]
+pub enum MeasurementUnit {
+    Metric,
+    Imperial,
+    ImperialUS
+}
+
+#[derive(
     Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize, EnumIter, EnumString, Display, Type,
 )]
 #[sqlx(type_name = "text")]

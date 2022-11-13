@@ -1,5 +1,5 @@
 use crate::constants::categories::FoodCategory;
-use crate::constants::{Allergen, Cuisine, Flag, MealTime};
+use crate::constants::{Allergen, Cuisine, Flag, MealTime, MeasurementUnit};
 use actix_web::Responder;
 use std::collections::{HashMap, HashSet};
 use strum::IntoEnumIterator;
@@ -10,6 +10,14 @@ use crate::utils::AppError;
 
 pub async fn alive() -> impl Responder {
     env!("CARGO_PKG_VERSION").to_string()
+}
+
+pub async fn units() -> impl Responder {
+    success_cached_resp(
+        MeasurementUnit::iter()
+            .map(|e| e.to_string())
+            .collect::<Vec<String>>(),
+    )
 }
 
 pub async fn cuisines() -> impl Responder {

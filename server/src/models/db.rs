@@ -1,5 +1,5 @@
 use crate::constants::categories::{FoodCategory, FoodSubCategory};
-use crate::constants::{Cuisine, Flag, MealTime};
+use crate::constants::{Cuisine, Flag, MealTime, MeasurementUnit};
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
@@ -22,7 +22,7 @@ pub struct UserTokens {
 pub struct Weight {
     pub id: u64,
     pub user_id: Uuid,
-    pub kgs: f32,
+    pub grams: i32,
     pub date: DateTime<Utc>,
 }
 
@@ -57,6 +57,16 @@ pub struct MealEntry {
     pub date: DateTime<Utc>,
     pub amount: i32,
     pub calories: i32,
+}
+
+#[derive(Debug, sqlx::FromRow)]
+pub struct UserData {
+    pub user_id: Uuid,
+    pub preferred_unit: MeasurementUnit,
+    pub default_measurement_names: Vec<String>,
+    pub target_weight_grams: Option<i32>,
+    pub target_weight_date: Option<DateTime<Utc>>,
+    pub height: i32
 }
 
 #[derive(Debug, sqlx::FromRow)]
