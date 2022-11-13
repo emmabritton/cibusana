@@ -16,14 +16,14 @@ import kotlin.test.assertEquals
 
 class LoginTests : RuntimeTest() {
 
-    private val skipHistory: List<UiState> = listOf(WelcomeState, LoginState.Entering.init())
+    private val uiHistory: List<UiState> = listOf(WelcomeState, LoginState.Entering.init())
 
     @Test
     fun `check full flow and skip result in same state`() {
         lateinit var skipState: AppState
         lateinit var flowState: AppState
         app {
-            skipTo(Login, skipHistory) {
+            skipTo(Login, uiHistory) {
                 skipState = this@app.runtime.state
             }
         }
@@ -45,7 +45,7 @@ class LoginTests : RuntimeTest() {
     @Test
     fun `check login with invalid details`() {
         app {
-            skipTo(Login, skipHistory) {
+            skipTo(Login, uiHistory) {
                 enterInvalidDetailsAndSubmit()
                 assertErrorVisible("103")
                 assertNotLoggedIn()
@@ -57,7 +57,7 @@ class LoginTests : RuntimeTest() {
     fun `check login with valid details`() {
         val testUser = User("Test", UUID.randomUUID())
         app {
-            skipTo(Login, skipHistory) {
+            skipTo(Login, uiHistory) {
                 enterValidDetailsAndSubmit(testUser)
             }
             assertAt(Home) {
@@ -70,7 +70,7 @@ class LoginTests : RuntimeTest() {
     fun `test whole app flow from splash to home, with one failed login`() {
         val testUser = User("Test2", UUID.randomUUID())
         app {
-            skipTo(Login, skipHistory) {
+            skipTo(Login, uiHistory) {
                 enterInvalidDetailsAndSubmit()
                 assertErrorVisible()
                 clearError()
