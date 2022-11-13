@@ -4,10 +4,7 @@ import app.emmabritton.cibusana.network.apis.DataApi
 import app.emmabritton.cibusana.network.apis.FoodApi
 import app.emmabritton.cibusana.network.apis.MeApi
 import app.emmabritton.cibusana.network.apis.UserApi
-import app.emmabritton.cibusana.network.models.LoginRequest
-import app.emmabritton.cibusana.network.models.MealEntryRequest
-import app.emmabritton.cibusana.network.models.RegisterRequest
-import app.emmabritton.cibusana.network.models.WeightRequest
+import app.emmabritton.cibusana.network.models.*
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -42,20 +39,25 @@ class Api internal constructor(
 
     fun getWeights(token: UUID, start: ZonedDateTime, end: ZonedDateTime) =
         executeRequest(logger, meApi.weight(token, start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME), end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
-
     fun getFirstWeight(token: UUID) = executeOptionalRequest(logger, meApi.firstWeight(token))
     fun getLastWeight(token: UUID) = executeOptionalRequest(logger, meApi.lastWeight(token))
     fun deleteWeight(token: UUID, date: ZonedDateTime) = executeRequest(logger, meApi.weight(token, date))
+    fun addWeight(token: UUID, kgs: Float, date: ZonedDateTime) =
+        executeRequest(logger, meApi.weight(token, WeightRequest(kgs, date)))
 
     fun getFirstEntry(token: UUID) = executeOptionalRequest(logger, meApi.firstEntry(token))
     fun getLastEntry(token: UUID) = executeOptionalRequest(logger, meApi.lastEntry(token))
     fun deleteEntry(token: UUID, id: Long) = executeRequest(logger, meApi.entry(token, id))
     fun getEntries(token: UUID, start: ZonedDateTime, end: ZonedDateTime) =
         executeRequest(logger, meApi.entry(token, start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME), end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
-
     fun addEntry(token: UUID, request: MealEntryRequest) =
         executeRequest(logger, meApi.entry(token, request))
 
-    fun addWeight(token: UUID, kgs: Float, date: ZonedDateTime) =
-        executeRequest(logger, meApi.weight(token, WeightRequest(kgs, date)))
+    fun addMeasurement(token: UUID, request: MeasurementRequest) =
+        executeRequest(logger, meApi.measurement(token, request))
+    fun getFirstMeasurement(token: UUID) = executeOptionalRequest(logger, meApi.firstMeasurement(token))
+    fun getLastMeasurement(token: UUID) = executeOptionalRequest(logger, meApi.lastMeasurement(token))
+    fun deleteMeasurement(token: UUID, id: ZonedDateTime) = executeRequest(logger, meApi.measurement(token, id))
+    fun getMeasurements(token: UUID, start: ZonedDateTime, end: ZonedDateTime) =
+        executeRequest(logger, meApi.measurement(token, start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME), end.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
 }

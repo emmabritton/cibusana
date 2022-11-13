@@ -5,7 +5,7 @@ import app.emmabritton.cibusana.network.models.*
 import retrofit2.Call
 import retrofit2.http.*
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 interface MeApi {
     @GET("/me/weight")
@@ -65,4 +65,33 @@ interface MeApi {
         @Query("start") start: String,
         @Query("end") end: String
     ): Call<ResponseWrapper<List<MealEntryResponse>>>
+
+    @DELETE("/me/measure/{id}")
+    fun measurement(
+        @Header(HEADER_TOKEN) token: UUID,
+        @Path("id") id: ZonedDateTime
+    ): Call<ResponseWrapper<Int>>
+
+    @POST("/me/measure")
+    fun measurement(
+        @Header(HEADER_TOKEN) token: UUID,
+        @Body body: MeasurementRequest
+    ): Call<ResponseWrapper<Long>>
+
+    @GET("/me/measure/first")
+    fun firstMeasurement(
+        @Header(HEADER_TOKEN) token: UUID
+    ): Call<ResponseWrapper<MeasurementResponse?>>
+
+    @GET("/me/measure/last")
+    fun lastMeasurement(
+        @Header(HEADER_TOKEN) token: UUID
+    ): Call<ResponseWrapper<MeasurementResponse?>>
+
+    @GET("/me/measure")
+    fun measurement(
+        @Header(HEADER_TOKEN) token: UUID,
+        @Query("start") start: String,
+        @Query("end") end: String
+    ): Call<ResponseWrapper<List<MeasurementResponse>>>
 }
