@@ -48,3 +48,4 @@ Add milk to cup', '{EspressoMachine}', 6, 2, '{Vegetarian,Halal,Drink,Kosher}', 
 
 INSERT INTO "food-app".users (id, name, email_address, password, created_at) VALUES ('e4647204-3d65-4b52-983a-a8b7e270d476', 'System', 'system@foodapp.com', 'invalid', '2022-11-06 14:15:06.539459+00');
 
+INSERT INTO "food-app".user_data(user_id, default_measurement_names, preferred_unit, height) VALUES ('e4647204-3d65-4b52-983a-a8b7e270d476', '{Chest,Leg}', 'Metric', 200);

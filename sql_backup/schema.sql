@@ -144,6 +144,17 @@ CREATE TABLE "food-app".weight (
     date timestamp with time zone NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS "food-app".user_data
+(
+    user_id uuid NOT NULL,
+    default_measurement_names text[] COLLATE pg_catalog."default" NOT NULL,
+    preferred_unit text COLLATE pg_catalog."default" NOT NULL,
+    height real NOT NULL,
+    target_weight_grams integer,
+    target_weight_date timestamp with time zone,
+    CONSTRAINT user_data_pkey PRIMARY KEY (user_id)
+)
+
 CREATE SEQUENCE "food-app".meal_entry_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -158,6 +169,7 @@ CREATE SEQUENCE "food-app".weight_id_seq
     NO MAXVALUE
     CACHE 1;
 
+ALTER TABLE IF EXISTS "food-app".user_data OWNER to doadmin;
 ALTER TABLE "food-app".food_item OWNER TO doadmin;
 ALTER TABLE "food-app".meal OWNER TO doadmin;
 ALTER TABLE "food-app".meal_entry_id_seq OWNER TO doadmin;
@@ -218,4 +230,6 @@ GRANT ALL ON TABLE "food-app".users TO read_write_journal;
 GRANT ALL ON SEQUENCE "food-app".weight_id_seq TO read_write_journal;
 
 GRANT ALL ON TABLE "food-app".weight TO read_write_journal;
+
+GRANT ALL ON TABLE "food-app".user_data TO read_write_journal;
 
