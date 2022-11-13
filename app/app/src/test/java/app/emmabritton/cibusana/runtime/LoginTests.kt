@@ -19,7 +19,7 @@ class LoginTests : RuntimeTest() {
     private val uiHistory: List<UiState> = listOf(WelcomeState, LoginState.Entering.init())
 
     @Test
-    fun `check full flow and skip result in same state`() {
+    fun `GIVEN app started WHEN splash-init, welcome-login THEN at login with same history`() {
         lateinit var skipState: AppState
         lateinit var flowState: AppState
         app {
@@ -43,7 +43,7 @@ class LoginTests : RuntimeTest() {
     }
 
     @Test
-    fun `check login with invalid details`() {
+    fun `GIVEN on login WHEN invalid login THEN not logged in and on login error`() {
         app {
             skipTo(Login, uiHistory) {
                 enterInvalidDetailsAndSubmit()
@@ -54,7 +54,7 @@ class LoginTests : RuntimeTest() {
     }
 
     @Test
-    fun `check login with valid details`() {
+    fun `GIVEN on login WHEN valid login THEN logged in and at home`() {
         val testUser = User("Test", UUID.randomUUID())
         app {
             skipTo(Login, uiHistory) {
@@ -67,7 +67,7 @@ class LoginTests : RuntimeTest() {
     }
 
     @Test
-    fun `test whole app flow from splash to home, with one failed login`() {
+    fun `GIVEN on login WHEN invalid then valid login THEN logged in and at home`() {
         val testUser = User("Test2", UUID.randomUUID())
         app {
             skipTo(Login, uiHistory) {

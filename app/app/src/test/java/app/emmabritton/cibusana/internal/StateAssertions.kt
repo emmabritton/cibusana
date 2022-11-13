@@ -22,6 +22,18 @@ fun <S : UiState> AppState.assertUiState(type: Class<S>, prefix: String? = null)
     return this.uiState as S
 }
 
+@Suppress("UNCHECKED_CAST")
+fun <S : UiState> AppState.assertNotUiState(type: Class<S>, prefix: String? = null): S {
+    assert(this.uiState.javaClass != type && this.uiState.javaClass.enclosingClass != type) {
+        "${prefix ?: ""} UI state should not have been $type"
+    }
+    return this.uiState as S
+}
+
 fun <S : UiState> Runtime.assertUiState(type: Class<S>, prefix: String? = null): S {
     return this.state.assertUiState(type, prefix)
+}
+
+fun <S : UiState> Runtime.assertNotUiState(type: Class<S>, prefix: String? = null): S {
+    return this.state.assertNotUiState(type, prefix)
 }

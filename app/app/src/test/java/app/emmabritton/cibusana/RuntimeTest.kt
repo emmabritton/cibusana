@@ -71,7 +71,11 @@ open class RuntimeTest {
     }
 
     fun <T, C: UiState> RuntimeScope.skipTo(factory: ScopeFactory<T, C>, fakeHistory: List<UiState>, contents: T.() -> Unit) {
-        runtime.assertNoGlobalError("Setting default $factory.name state")
+        runtime.assertNoGlobalError("Setting default ${factory.name} state")
+        runtime.assertNotUiState(
+            factory.testClass,
+            "Tried to skip to ${factory.name} but already in that state"
+        )
         runtime.state = AppState.init().copy(uiState = factory.uiState, uiHistory = ArrayDeque(fakeHistory))
         contents(factory.makeScope(this))
     }
