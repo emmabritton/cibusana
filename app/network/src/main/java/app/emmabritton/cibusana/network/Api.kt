@@ -21,8 +21,8 @@ class Api internal constructor(
     fun login(email: String, password: String) =
         executeRequest(logger, userApi.login(LoginRequest(email, password)))
 
-    fun register(email: String, password: String, name: String) =
-        executeRequest(logger, userApi.register(RegisterRequest(email, password, name)))
+    fun register(request: RegisterRequest) =
+        executeRequest(logger, userApi.register(request))
 
     fun searchFood(name: String? = null, page: Int = 0) =
         executePagedRequest(logger, foodApi.searchFoods(page, name))
@@ -42,8 +42,8 @@ class Api internal constructor(
     fun getFirstWeight(token: UUID) = executeOptionalRequest(logger, meApi.firstWeight(token))
     fun getLastWeight(token: UUID) = executeOptionalRequest(logger, meApi.lastWeight(token))
     fun deleteWeight(token: UUID, date: ZonedDateTime) = executeRequest(logger, meApi.weight(token, date))
-    fun addWeight(token: UUID, kgs: Float, date: ZonedDateTime) =
-        executeRequest(logger, meApi.weight(token, WeightRequest(kgs, date)))
+    fun addWeight(token: UUID, grams: Int, date: ZonedDateTime) =
+        executeRequest(logger, meApi.weight(token, WeightRequest(grams, date)))
 
     fun getFirstEntry(token: UUID) = executeOptionalRequest(logger, meApi.firstEntry(token))
     fun getLastEntry(token: UUID) = executeOptionalRequest(logger, meApi.lastEntry(token))

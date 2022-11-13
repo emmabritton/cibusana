@@ -8,6 +8,8 @@ import app.emmabritton.cibusana.flow.foodList.FoodAction
 import app.emmabritton.cibusana.flow.foodList.reduceFoodAction
 import app.emmabritton.cibusana.flow.login.LoginAction
 import app.emmabritton.cibusana.flow.login.reduceLoginAction
+import app.emmabritton.cibusana.flow.measurements.MeasurementAction
+import app.emmabritton.cibusana.flow.measurements.reduceMeasurementAction
 import app.emmabritton.cibusana.flow.register.RegisterAction
 import app.emmabritton.cibusana.flow.register.reduceRegisterAction
 import app.emmabritton.cibusana.flow.splash.SplashAction
@@ -34,6 +36,7 @@ fun reduce(action: Action, state: AppState): AppEffect {
         is FoodAction -> reduceFoodAction(action, state)
         is WeightAction -> reduceWeightAction(action, state)
         is EntryAction -> reduceEntryAction(action, state)
+        is MeasurementAction -> reduceMeasurementAction(action, state)
         is CommandException -> {
             Timber.e(action.cause, action.name)
             AppEffect(

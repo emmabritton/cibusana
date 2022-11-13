@@ -6,14 +6,14 @@ import java.time.ZonedDateTime
 
 @JsonClass(generateAdapter = true)
 data class WeightResponse(
-    @Json(name = "a")
-    val amount: Float,
+    @Json(name = "g")
+    val grams: Int,
     @Json(name = "d")
     val date: ZonedDateTime
 )
 
 @JsonClass(generateAdapter = true)
 data class WeightRequest(
-    val amount: Float,
+    val grams: Int,
     val date: ZonedDateTime
 )

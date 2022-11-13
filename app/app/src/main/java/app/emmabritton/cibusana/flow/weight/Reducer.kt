@@ -1,5 +1,6 @@
 package app.emmabritton.cibusana.flow.weight
 
+import app.emmabritton.cibusana.DateRange
 import app.emmabritton.cibusana.network.models.WeightResponse
 import app.emmabritton.cibusana.system.AppEffect
 import app.emmabritton.cibusana.system.AppState
@@ -24,7 +25,7 @@ fun reduceWeightAction(action: WeightAction, state: AppState): AppEffect {
         )
         WeightAction.Show -> AppEffect(
             state.copy(uiState = WeightState.Loading.init()),
-            listOf(GetWeightForRange(Range.init()))
+            listOf(GetWeightForRange(DateRange.init()))
         )
         is WeightAction.UserChangedStartDate -> {
             val oldState = (state.uiState as WeightState.Viewing)
@@ -53,7 +54,7 @@ fun reduceWeightAction(action: WeightAction, state: AppState): AppEffect {
         }
         is WeightAction.UserChangedAmount -> {
             val uiState =
-                (state.uiState as WeightState.Viewing).copy(newAmount = action.amount.toFloat())
+                (state.uiState as WeightState.Viewing).copy(newAmount = action.amount.toInt())
             AppEffect(state.copy(uiState = uiState), emptyList())
         }
         WeightAction.SubmitSuccess -> {

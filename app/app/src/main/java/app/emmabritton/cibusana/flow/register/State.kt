@@ -1,7 +1,9 @@
 package app.emmabritton.cibusana.flow.register
 
+import app.emmabritton.cibusana.network.models.MeasurementUnit
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
+import java.time.ZonedDateTime
 
 sealed class RegisterState(override val config: UiStateConfig) : UiState {
     /**
@@ -10,13 +12,17 @@ sealed class RegisterState(override val config: UiStateConfig) : UiState {
     data class Entering(
         val email: String,
         val password: String,
-        val name: String
+        val name: String,
+        val height: Int,
+        val targetWeight: Int?,
+        val targetDate: ZonedDateTime?,
+        val units: MeasurementUnit
     ) : RegisterState(UiStateConfig.generalScreen()) {
         fun toLoading() = Loading(this)
 
         companion object {
             fun init(): Entering {
-                return Entering("", "", "")
+                return Entering("", "", "", 170, null, null, MeasurementUnit.Metric)
             }
         }
     }

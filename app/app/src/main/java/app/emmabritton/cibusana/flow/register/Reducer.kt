@@ -1,5 +1,6 @@
 package app.emmabritton.cibusana.flow.register
 
+import app.emmabritton.cibusana.network.models.RegisterRequest
 import app.emmabritton.cibusana.system.AppEffect
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.InvalidState
@@ -30,7 +31,19 @@ fun reduceRegisterAction(action: RegisterAction, state: AppState): AppEffect {
         is RegisterAction.UserSubmitted -> {
             AppEffect(
                 state.copy(uiState = (state.uiState as RegisterState.Entering).toLoading()),
-                listOf(SubmitUserRegister(state.uiState.email, state.uiState.password, state.uiState.name))
+                listOf(
+                    SubmitUserRegister(
+                        RegisterRequest(
+                            state.uiState.email,
+                            state.uiState.password,
+                            state.uiState.name,
+                            state.uiState.height,
+                            state.uiState.units.name,
+                            state.uiState.targetWeight,
+                            state.uiState.targetDate
+                        )
+                    )
+                )
             )
         }
         is RegisterAction.Rejected -> {

@@ -1,5 +1,6 @@
 package app.emmabritton.cibusana.flow.weight
 
+import app.emmabritton.cibusana.DateRange
 import app.emmabritton.cibusana.errorCodes
 import app.emmabritton.cibusana.persist.UserController
 import app.emmabritton.cibusana.withEndOfDay
@@ -9,7 +10,7 @@ import app.emmabritton.system.Command
 import org.koin.java.KoinJavaComponent.inject
 import java.time.ZonedDateTime
 
-class GetWeightForRange(private val range: Range) : Command {
+class GetWeightForRange(private val range: DateRange) : Command {
     private val userController: UserController by inject(UserController::class.java)
 
     override fun run(actionReceiver: ActionReceiver) {
@@ -26,11 +27,11 @@ class GetWeightForRange(private val range: Range) : Command {
     }
 }
 
-class SubmitWeight(private val amount: Float, private val date: ZonedDateTime) : Command {
+class SubmitWeight(private val grams: Int, private val date: ZonedDateTime) : Command {
     private val userController: UserController by inject(UserController::class.java)
 
     override fun run(actionReceiver: ActionReceiver) {
-        userController.addWeight(amount, date)
+        userController.addWeight(grams, date)
             .onSuccess {
                 actionReceiver.receive(WeightAction.SubmitSuccess)
             }
