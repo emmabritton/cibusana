@@ -118,7 +118,7 @@ CREATE TABLE "food-app".meal_entry (
 CREATE TABLE "food-app".measurement (
     id uuid DEFAULT public.uuid_generate_v1() NOT NULL,
     user_id uuid NOT NULL,
-    created_at timestamp with time zone NOT NULL,
+    date timestamp with time zone NOT NULL,
     m_names text[] NOT NULL,
     m_values real[] NOT NULL
 );
