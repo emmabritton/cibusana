@@ -17,6 +17,7 @@ object Dimen {
         val Full = 32.dp
     }
     object Space {
+        val TitleBar = 4.dp
         val Form = 8.dp
         val FormAction = 16.dp
         val Title = 32.dp

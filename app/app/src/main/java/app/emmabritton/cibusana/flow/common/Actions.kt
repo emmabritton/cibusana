@@ -20,4 +20,9 @@ sealed class CommonAction : Action {
     object GoBack : CommonAction() {
         override fun describe() = "GoBack"
     }
+
+    /**
+     * User pressed a home button (such as SmallLogo)
+     */
+    object UserPressedHome: CommonAction()
 }

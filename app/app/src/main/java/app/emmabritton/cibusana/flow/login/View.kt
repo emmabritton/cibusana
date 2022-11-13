@@ -10,9 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import app.emmabritton.cibusana.R
-import app.emmabritton.cibusana.ui.theme.Dimen
+import app.emmabritton.cibusana.flow.ToolingActionReceiver
+import app.emmabritton.cibusana.ui.theme.CibusanaTheme
 import app.emmabritton.cibusana.ui.theme.Dimen.Padding
+import app.emmabritton.cibusana.ui.theme.Dimen.Space
 import app.emmabritton.system.ActionReceiver
 
 @Composable
@@ -34,15 +37,17 @@ private fun ErrorUi(
     actionReceiver: ActionReceiver,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .then(modifier),
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
-        Text("Errors: ${state.message}")
-        TextButton(onClick = { actionReceiver.receive(LoginAction.UserClearedError) }) {
-            Text("OK")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("Errors: ${state.message}", color = MaterialTheme.colorScheme.error)
+            TextButton(onClick = { actionReceiver.receive(LoginAction.UserClearedError) }) {
+                Text("OK")
+            }
         }
     }
 }
@@ -72,12 +77,7 @@ private fun EnteringUi(
             .then(modifier),
         horizontalAlignment = Alignment.End
     ) {
-        Text(
-            stringResource(id = R.string.login_title),
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleLarge
-        )
-        Spacer(Modifier.height(Dimen.Space.Title))
+        Spacer(Modifier.height(Space.Title))
         TextField(
             value = state.email,
             onValueChange = {
@@ -92,7 +92,7 @@ private fun EnteringUi(
             ),
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(Dimen.Space.Form))
+        Spacer(Modifier.height(Space.Form))
         TextField(
             value = state.password,
             onValueChange = {
@@ -108,9 +108,19 @@ private fun EnteringUi(
             ),
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(Dimen.Space.FormAction))
+        Spacer(Modifier.height(Space.FormAction))
         Button(onClick = { actionReceiver.receive(LoginAction.UserSubmitted) }) {
             Text(stringResource(id = R.string.login_submit))
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewEnteringUi() {
+    CibusanaTheme {
+        Surface {
+            EnteringUi(state = LoginState.Entering.init(), actionReceiver = ToolingActionReceiver)
         }
     }
 }

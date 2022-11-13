@@ -12,6 +12,10 @@ fun reduceCommonAction(action: CommonAction, state: AppState): AppEffect {
             state.copy(uiState = HomeState, user = action.user),
             emptyList()
         )
+        CommonAction.UserPressedHome -> AppEffect(
+            state.copy(uiState = HomeState),
+            emptyList()
+        )
         CommonAction.ServerRejectedToken -> AppEffect(
             state.copy(
                 uiState = WelcomeState,

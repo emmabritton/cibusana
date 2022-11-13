@@ -1,12 +1,18 @@
 package app.emmabritton.cibusana.flow.weight
 
 import app.emmabritton.cibusana.DateRange
+import app.emmabritton.cibusana.R
 import app.emmabritton.cibusana.network.models.WeightResponse
+import app.emmabritton.cibusana.system.TopBarConfig
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
+import app.emmabritton.cibusana.system.loggedInBarConfig
 import java.time.ZonedDateTime
 
-sealed class WeightState(override val config: UiStateConfig) : UiState {
+sealed class WeightState(
+    override val config: UiStateConfig,
+    override val topBarConfig: TopBarConfig = loggedInBarConfig(R.string.screen_weight)
+) : UiState {
     data class Viewing(
         val weights: List<WeightResponse>,
         val range: DateRange,

@@ -13,10 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.emmabritton.cibusana.system.AppState
+import androidx.compose.ui.res.stringResource
 import app.emmabritton.cibusana.flow.Render
 import app.emmabritton.cibusana.flow.splash.SplashAction
+import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.Runtime
+import app.emmabritton.cibusana.ui.SmallLogo
 import app.emmabritton.cibusana.ui.theme.CibusanaTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -40,22 +42,37 @@ class AppActivity : ComponentActivity() {
         setContent {
             CibusanaTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Scaffold {
-                        val state = uiState.collectAsState().value
-                        Box(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(it)) {
-                            Render(state, runtime)
-                            if (BuildConfig.DEBUG) {
-                                DebugView(state)
+                    val state = uiState.collectAsState().value
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        topBar = {
+                            state.uiState.topBarConfig?.let { barState ->
+                                TopAppBar(
+                                    title = {
+                                        Text(stringResource(barState.title))
+                                    },
+                                    navigationIcon = {
+                                        SmallLogo(
+                                            runtime,
+                                            barState.navTargetAction
+                                        )
+                                    })
                             }
-                        }
-                    }
-
+                        },
+                        content = {
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(it)
+                            ) {
+                                Render(state, runtime)
+                                if (BuildConfig.DEBUG) {
+                                    DebugView(state)
+                                }
+                            }
+                        })
                 }
             }
         }

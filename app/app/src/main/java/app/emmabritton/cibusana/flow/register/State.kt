@@ -1,11 +1,17 @@
 package app.emmabritton.cibusana.flow.register
 
+import app.emmabritton.cibusana.R
 import app.emmabritton.cibusana.network.models.MeasurementUnit
+import app.emmabritton.cibusana.system.TopBarConfig
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
+import app.emmabritton.cibusana.system.loggedOutBarConfig
 import java.time.ZonedDateTime
 
-sealed class RegisterState(override val config: UiStateConfig) : UiState {
+sealed class RegisterState(
+    override val config: UiStateConfig,
+    override val topBarConfig: TopBarConfig = loggedOutBarConfig(R.string.screen_register)
+) : UiState {
     /**
      * Entering data into register screen
      */
@@ -37,7 +43,8 @@ sealed class RegisterState(override val config: UiStateConfig) : UiState {
     /**
      * Something went wrong with register request
      */
-    data class Error(val message: String, val details: Entering) : RegisterState(UiStateConfig.tempScreen()) {
+    data class Error(val message: String, val details: Entering) :
+        RegisterState(UiStateConfig.tempScreen()) {
         fun toEntering() = details
     }
 }

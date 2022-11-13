@@ -12,13 +12,17 @@ sealed class RegisterAction(val stateValidator: (RegisterState) -> Boolean) : Ac
      */
     data class UserUpdatedEmail(val newText: String) : RegisterAction(enteringOnly)
     /**
-     * User has entered text into the email field on the password screen
+     * User has entered text into the password field on the register screen
      */
     data class UserUpdatedPassword(val newText: String) : RegisterAction(enteringOnly)
     /**
-     * User has entered text into the email field on the name screen
+     * User has entered text into the name field on the register screen
      */
     data class UserUpdatedName(val newText: String) : RegisterAction(enteringOnly)
+    /**
+     * User has entered a number into the height field on the register screen
+     */
+    data class UserUpdatedHeight(val newHeight: Int): RegisterAction(enteringOnly)
     /**
      * User has pressed submit button on the register screen
      */

@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.UUID
+import java.util.*
 
 class UuidAdapter : JsonAdapter<UUID>() {
     override fun fromJson(reader: JsonReader): UUID? {
@@ -13,8 +13,10 @@ class UuidAdapter : JsonAdapter<UUID>() {
     }
 
     override fun toJson(writer: JsonWriter, value: UUID?) {
-        value?.let {
-            writer.jsonValue(it.toString())
+        if (value != null) {
+            writer.jsonValue(value.toString())
+        } else {
+            writer.nullValue()
         }
     }
 }
@@ -25,8 +27,10 @@ class ZonedDateTimeAdapter : JsonAdapter<ZonedDateTime>() {
     }
 
     override fun toJson(writer: JsonWriter, value: ZonedDateTime?) {
-        value?.let {
-            writer.jsonValue(it.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+        if (value != null) {
+            writer.jsonValue(value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+        } else {
+            writer.nullValue()
         }
     }
 }

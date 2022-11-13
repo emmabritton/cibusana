@@ -39,15 +39,16 @@ private fun ErrorUi(
     actionReceiver: ActionReceiver,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .then(modifier),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .then(modifier)
     ) {
-        Text("Errors: ${state.message}")
-        TextButton(onClick = { actionReceiver.receive(RegisterAction.UserClearedError) }) {
-            Text("OK")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("Errors: ${state.message}")
+            TextButton(onClick = { actionReceiver.receive(RegisterAction.UserClearedError) }) {
+                Text("OK")
+            }
         }
     }
 }
@@ -77,11 +78,6 @@ private fun EnteringUi(
             .then(modifier),
         horizontalAlignment = Alignment.End
     ) {
-        Text(
-            stringResource(id = R.string.register_title),
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleLarge
-        )
         Spacer(Modifier.height(Dimen.Space.Title))
         TextField(
             value = state.name,
@@ -123,9 +119,23 @@ private fun EnteringUi(
             },
             label = { Text(stringResource(id = R.string.register_password)) },
             placeholder = { Text(stringResource(id = R.string.register_password_placeholder)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(Dimen.Space.Form))
+        TextField(
+            value = state.height.toString(),
+            onValueChange = {
+                actionReceiver.receive(
+                    RegisterAction.UserUpdatedHeight(it.toInt())
+                )
+            },
+            label = { Text(stringResource(id = R.string.register_height)) },
             keyboardActions = KeyboardActions(onDone = { actionReceiver.receive(RegisterAction.UserSubmitted) }),
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
+                keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
             ),
             modifier = Modifier.fillMaxWidth()

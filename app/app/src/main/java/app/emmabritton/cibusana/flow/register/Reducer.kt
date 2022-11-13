@@ -13,6 +13,11 @@ fun reduceRegisterAction(action: RegisterAction, state: AppState): AppEffect {
         return InvalidState("Tried to run ${action.describe()} for ${state.uiState.javaClass.simpleName}")
     }
     return when (action) {
+        is RegisterAction.UserUpdatedHeight -> AppEffect(
+            state.copy(
+                uiState = (state.uiState as RegisterState.Entering).copy(height = action.newHeight)
+            ), emptyList()
+        )
         is RegisterAction.UserUpdatedEmail -> AppEffect(
             state.copy(
                 uiState = (state.uiState as RegisterState.Entering).copy(email = action.newText)

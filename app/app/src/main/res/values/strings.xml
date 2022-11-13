@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Cibusana</string>
 
+    <string name="screen_login">Login</string>
+    <string name="screen_register">Register</string>
+    <string name="screen_home" />
+    <string name="screen_weight">Weight</string>
+    <string name="screen_measurements">Measurements</string>
+    <string name="screen_food">Food</string>
+    <string name="screen_entry">Meal Entries</string>
+
     <string name="welcome_login">Login</string>
     <string name="welcome_register">Register</string>
 
@@ -12,6 +20,7 @@
     <string name="register_title">Register with Cibusana</string>
     <string name="register_email">Email</string>
     <string name="register_password">Password</string>
+    <string name="register_height">Height (cm)</string>
     <string name="register_name">Name</string>
     <string name="register_submit">Register</string>
     <string name="register_password_placeholder">Min 8 characters</string>
