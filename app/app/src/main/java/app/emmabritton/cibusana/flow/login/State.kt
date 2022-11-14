@@ -1,14 +1,15 @@
 package app.emmabritton.cibusana.flow.login
 
 import app.emmabritton.cibusana.R
+import app.emmabritton.cibusana.system.FabConfig
 import app.emmabritton.cibusana.system.TopBarConfig
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
-import app.emmabritton.cibusana.system.loggedOutBarConfig
 
 sealed class LoginState(
     override val config: UiStateConfig,
-    override val topBarConfig: TopBarConfig = loggedOutBarConfig(R.string.screen_login)
+    override val topBarConfig: TopBarConfig = TopBarConfig.loggedOut(R.string.screen_login),
+    override val fabAction: FabConfig? = null
 ) : UiState {
     /**
      * Entering data into login screen

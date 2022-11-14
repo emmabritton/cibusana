@@ -1,8 +1,8 @@
 package app.emmabritton.cibusana.system
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import app.emmabritton.cibusana.flow.home.HomeAction
-import app.emmabritton.cibusana.flow.splash.SplashState
 import app.emmabritton.cibusana.flow.welcome.WelcomeAction
 import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.Action
@@ -29,7 +29,7 @@ data class AppState(
 
     companion object {
         fun init(): AppState {
-            val uiState = SplashState
+            val uiState = app.emmabritton.cibusana.flow.splash.SplashState
             return AppState(null, uiState, ArrayDeque(), null)
         }
     }
@@ -39,33 +39,35 @@ data class AppState(
 interface UiState {
     val config: UiStateConfig
     val topBarConfig: TopBarConfig?
+    val fabAction: FabConfig?
 }
 
 sealed class TitleType {
-    class Res(@StringRes val strResId: Int): TitleType()
-    class Str(val text: String): TitleType()
-    class Fmt(@StringRes val strResId: Int, val args: List<String>): TitleType()
-    class Date(val dt: ZonedDateTime): TitleType()
+    class Res(@StringRes val strResId: Int) : TitleType()
+    class Str(val text: String) : TitleType()
+    class Fmt(@StringRes val strResId: Int, val args: List<String>) : TitleType()
+    class Date(val dt: ZonedDateTime) : TitleType()
 }
 
-interface TopBarConfig {
-    val title: TitleType
+data class TopBarConfig(
+    val title: TitleType,
     val navTargetAction: Action
-}
+) {
+    companion object {
+        fun loggedOut(@StringRes name: Int) = TopBarConfig(
+            TitleType.Res(name),
+            WelcomeAction.Show
+        )
 
-fun loggedOutBarConfig(@StringRes name: Int): TopBarConfig {
-    return object: TopBarConfig {
-        override val title = TitleType.Res(name)
-        override val navTargetAction = WelcomeAction.Show
+        fun loggedIn(@StringRes name: Int) = TopBarConfig(TitleType.Res(name), HomeAction.ShowToday)
     }
 }
 
-fun loggedInBarConfig(@StringRes name: Int): TopBarConfig {
-    return object: TopBarConfig {
-        override val title = TitleType.Res(name)
-        override val navTargetAction = HomeAction.ShowToday
-    }
-}
+data class FabConfig(
+    val action: Action,
+    @DrawableRes
+    val icon: Int
+)
 
 data class UiStateConfig(
     /**
@@ -94,15 +96,18 @@ data class UiStateConfig(
          * For screens that should be the first in the history, such a home page
          */
         fun originScreen() = UiStateConfig(true, true, true, true)
+
         /**
          * For screens that should not be remembered and block the back button
          * TODO: Change commands cancellable and this can deprecated in favor of tempScreen
          */
         fun loadingScreen() = UiStateConfig(false, false, true, false)
+
         /**
          * For any other screen
          */
         fun generalScreen() = UiStateConfig(true, false, true, true)
+
         /**
          * For screens that should not be remembered
          */

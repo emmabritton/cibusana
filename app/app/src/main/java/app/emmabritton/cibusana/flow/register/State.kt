@@ -2,15 +2,16 @@ package app.emmabritton.cibusana.flow.register
 
 import app.emmabritton.cibusana.R
 import app.emmabritton.cibusana.network.models.MeasurementUnit
+import app.emmabritton.cibusana.system.FabConfig
 import app.emmabritton.cibusana.system.TopBarConfig
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
-import app.emmabritton.cibusana.system.loggedOutBarConfig
 import java.time.ZonedDateTime
 
 sealed class RegisterState(
     override val config: UiStateConfig,
-    override val topBarConfig: TopBarConfig = loggedOutBarConfig(R.string.screen_register)
+    override val topBarConfig: TopBarConfig = TopBarConfig.loggedOut(R.string.screen_register),
+    override val fabAction: FabConfig? = null
 ) : UiState {
     /**
      * Entering data into register screen

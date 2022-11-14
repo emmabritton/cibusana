@@ -1,6 +1,6 @@
 package app.emmabritton.cibusana
 
-import app.emmabritton.cibusana.flow.splash.SplashState
+import app.emmabritton.cibusana.flow.splash.State
 import app.emmabritton.cibusana.internal.*
 import app.emmabritton.cibusana.network.DI_URL
 import app.emmabritton.cibusana.network.networkModule
@@ -66,7 +66,7 @@ open class RuntimeTest {
 
     fun app(contents: RuntimeScope.() -> Unit) {
         val runtime = createTestRuntime()
-        runtime.assertUiState(SplashState::class.java, "app{} Init test")
+        runtime.assertUiState(State::class.java, "app{} Init test")
         contents(RuntimeScope(runtime, server))
     }
 

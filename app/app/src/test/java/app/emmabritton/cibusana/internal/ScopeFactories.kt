@@ -3,7 +3,7 @@ package app.emmabritton.cibusana.internal
 import app.emmabritton.cibusana.RuntimeTest
 import app.emmabritton.cibusana.flow.home.HomeState
 import app.emmabritton.cibusana.flow.login.LoginState
-import app.emmabritton.cibusana.flow.splash.SplashState
+import app.emmabritton.cibusana.flow.splash.State
 import app.emmabritton.cibusana.flow.welcome.WelcomeState
 import app.emmabritton.cibusana.internal.scopes.HomeScope
 import app.emmabritton.cibusana.internal.scopes.LoginScope
@@ -18,10 +18,10 @@ interface ScopeFactory<T, C: UiState> {
     fun makeScope(runtimeScope: RuntimeTest.RuntimeScope): T
 }
 
-object Splash : ScopeFactory<SplashScope, SplashState> {
+object Splash : ScopeFactory<SplashScope, State> {
     override val name = "splash"
-    override val uiState = SplashState
-    override val testClass = SplashState::class.java
+    override val uiState = State
+    override val testClass = State::class.java
     override fun makeScope(runtimeScope: RuntimeTest.RuntimeScope) =
         SplashScope(runtimeScope)
 }

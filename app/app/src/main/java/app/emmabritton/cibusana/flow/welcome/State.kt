@@ -1,5 +1,6 @@
 package app.emmabritton.cibusana.flow.welcome
 
+import app.emmabritton.cibusana.system.FabConfig
 import app.emmabritton.cibusana.system.TopBarConfig
 import app.emmabritton.cibusana.system.UiState
 import app.emmabritton.cibusana.system.UiStateConfig
@@ -10,4 +11,5 @@ import app.emmabritton.cibusana.system.UiStateConfig
 object WelcomeState : UiState {
     override val config = UiStateConfig.originScreen()
     override val topBarConfig: TopBarConfig? = null
+    override val fabAction: FabConfig? = null
 }

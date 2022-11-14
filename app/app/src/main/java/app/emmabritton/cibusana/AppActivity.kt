@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import app.emmabritton.cibusana.flow.Render
 import app.emmabritton.cibusana.flow.splash.SplashAction
@@ -67,6 +68,16 @@ class AppActivity : ComponentActivity() {
                                 Render(state, runtime)
                                 if (BuildConfig.DEBUG) {
                                     DebugView(state)
+                                }
+                            }
+                        },
+                        floatingActionButton = {
+                            state.uiState.fabAction?.let {
+                                FloatingActionButton(onClick = { runtime.receive(it.action) }) {
+                                    Icon(
+                                        painter = painterResource(id = it.icon),
+                                        contentDescription = null
+                                    )//TODO contentDescription
                                 }
                             }
                         })
