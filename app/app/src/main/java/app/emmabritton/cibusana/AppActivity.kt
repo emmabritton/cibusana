@@ -80,7 +80,7 @@ class AppActivity : ComponentActivity() {
 @Composable
 private fun TopBar(actionReceiver: ActionReceiver, config: TopBarConfig, printer: DateTimePrinter) {
     val titleText = config.title
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = {
             when (titleText) {
                 is TitleType.Fmt -> Text(
