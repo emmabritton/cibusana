@@ -1,43 +1,94 @@
 package app.emmabritton.cibusana.flow.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.emmabritton.cibusana.flow.entry.EntryAction
-import app.emmabritton.cibusana.flow.foodList.FoodAction
-import app.emmabritton.cibusana.flow.measurements.MeasurementAction
-import app.emmabritton.cibusana.flow.weight.WeightAction
-import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.system.ActionReceiver
 
-//state.uiState === uiState, but this approach avoids having to cast it
 @Composable
 fun HomeUi(
-    state: AppState,
     uiState: HomeState,
     actionReceiver: ActionReceiver,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxSize().then(modifier)) {
-        Text("Hi, ${state.user?.name}")
+    when (uiState) {
+        is HomeState.Loading -> LoadingUi(modifier = modifier)
+        is HomeState.Viewing -> ViewingUi(
+            state = uiState,
+            actionReceiver = actionReceiver,
+            modifier = modifier
+        )
+        is HomeState.Error -> ErrorUi(actionReceiver = actionReceiver, modifier = modifier)
+    }
+}
 
-        Button({actionReceiver.receive(FoodAction.Show)}) {
-            Text("View food")
+@Composable
+private fun ViewingUi(
+    state: HomeState.Viewing,
+    actionReceiver: ActionReceiver,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .then(modifier)
+    ) {
+        Row(Modifier.fillMaxWidth()) {
+            TextButton(
+                onClick = { actionReceiver.receive(HomeAction.UserPressedPrevDay) },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Prev")
+            }
+            TextButton(
+                onClick = { actionReceiver.receive(HomeAction.UserPressedNextDay) },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Next")
+            }
         }
-
-        Button({actionReceiver.receive(WeightAction.Show)}) {
-            Text("View weight")
+        Text("Total calories: ${state.data.values.sumOf { list -> list.sumOf { it.calories } }}kcal")
+        for (mealTime in state.data.keys) {
+            Text(mealTime)
+            Column {
+                for (item in state.data[mealTime] ?: emptyList()) {
+                    val food = state.food[item.foodId]
+                    Text("${food?.name} ${item.grams}g ${item.calories}kcal")
+                }
+            }
         }
+    }
+}
 
-        Button({actionReceiver.receive(EntryAction.Show)}) {
-            Text("View entries")
-        }
+@Composable
+private fun LoadingUi(modifier: Modifier = Modifier) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .then(modifier),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
 
-        Button({actionReceiver.receive(MeasurementAction.Show)}) {
-            Text("View measurements")
+@Composable
+private fun ErrorUi(actionReceiver: ActionReceiver, modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(modifier),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Error")
+        Button({ actionReceiver.receive(HomeAction.ShowToday) }) {
+            Text("OK")
         }
     }
 }

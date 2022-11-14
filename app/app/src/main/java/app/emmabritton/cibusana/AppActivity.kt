@@ -18,8 +18,11 @@ import app.emmabritton.cibusana.flow.Render
 import app.emmabritton.cibusana.flow.splash.SplashAction
 import app.emmabritton.cibusana.system.AppState
 import app.emmabritton.cibusana.system.Runtime
+import app.emmabritton.cibusana.system.TitleType
+import app.emmabritton.cibusana.system.TopBarConfig
 import app.emmabritton.cibusana.ui.SmallLogo
 import app.emmabritton.cibusana.ui.theme.CibusanaTheme
+import app.emmabritton.system.ActionReceiver
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class AppActivity : ComponentActivity() {
@@ -48,17 +51,8 @@ class AppActivity : ComponentActivity() {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
-                            state.uiState.topBarConfig?.let { barState ->
-                                TopAppBar(
-                                    title = {
-                                        Text(stringResource(barState.title))
-                                    },
-                                    navigationIcon = {
-                                        SmallLogo(
-                                            runtime,
-                                            barState.navTargetAction
-                                        )
-                                    })
+                            state.uiState.topBarConfig?.let { config ->
+                                TopBar(runtime, config)
                             }
                         },
                         content = {
@@ -77,6 +71,26 @@ class AppActivity : ComponentActivity() {
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopBar(actionReceiver: ActionReceiver, config: TopBarConfig) {
+    val titleText = config.title
+    TopAppBar(
+        title = {
+            when (titleText) {
+                is TitleType.Fmt -> Text(stringResource(titleText.strResId, *titleText.args.toTypedArray()))
+                is TitleType.Res -> Text(stringResource(titleText.strResId))
+                is TitleType.Str -> Text(titleText.text)
+            }
+        },
+        navigationIcon = {
+            SmallLogo(
+                actionReceiver,
+                config.navTargetAction
+            )
+        })
 }
 
 @Composable

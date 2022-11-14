@@ -1,6 +1,7 @@
 package app.emmabritton.cibusana.di
 
 import android.content.Context
+import app.emmabritton.cibusana.DateTimePrinter
 import app.emmabritton.cibusana.network.DI_CACHE_FILE
 import app.emmabritton.cibusana.network.DI_URL
 import app.emmabritton.cibusana.network.Logger
@@ -41,5 +42,9 @@ val appModule = module {
 
     single(named(DI_CACHE_FILE)) {
         get<Context>().cacheDir
+    }
+
+    single {
+        DateTimePrinter(get())
     }
 }

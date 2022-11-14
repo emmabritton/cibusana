@@ -1,6 +1,6 @@
 package app.emmabritton.cibusana.flow.splash
 
-import app.emmabritton.cibusana.flow.common.CommonAction
+import app.emmabritton.cibusana.flow.home.HomeAction
 import app.emmabritton.cibusana.flow.welcome.WelcomeAction
 import app.emmabritton.cibusana.persist.DataController
 import app.emmabritton.cibusana.persist.UserController
@@ -18,7 +18,7 @@ class LoadUserData : Command {
     override fun run(actionReceiver: ActionReceiver) {
         val user = userController.user
         if (user != null) {
-            actionReceiver.receive(CommonAction.LoggedIn(user))
+            actionReceiver.receive(HomeAction.UserLoggedIn(user))
         } else {
             actionReceiver.receive(WelcomeAction.Show)
         }

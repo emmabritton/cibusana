@@ -8,8 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.emmabritton.cibusana.flow.entry.EntryState
-import app.emmabritton.cibusana.flow.entry.EntryUi
 import app.emmabritton.cibusana.flow.foodList.FoodState
 import app.emmabritton.cibusana.flow.foodList.FoodUi
 import app.emmabritton.cibusana.flow.home.HomeState
@@ -53,7 +51,6 @@ fun Render(state: AppState, actionReceiver: ActionReceiver, modifier: Modifier =
                     actionReceiver = actionReceiver
                 )
                 is HomeState -> HomeUi(
-                    state = state,
                     uiState = state.uiState,
                     actionReceiver = actionReceiver
                 )
@@ -61,7 +58,6 @@ fun Render(state: AppState, actionReceiver: ActionReceiver, modifier: Modifier =
                     weightState = state.uiState,
                     actionReceiver = actionReceiver
                 )
-                is EntryState -> EntryUi(state = state.uiState, actionReceiver = actionReceiver)
                 is MeasurementState -> MeasurementUi(
                     state = state.uiState,
                     actionReceiver = actionReceiver

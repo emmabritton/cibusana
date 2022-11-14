@@ -8,14 +8,6 @@ import timber.log.Timber
 
 fun reduceCommonAction(action: CommonAction, state: AppState): AppEffect {
     return when (action) {
-        is CommonAction.LoggedIn -> AppEffect(
-            state.copy(uiState = HomeState, user = action.user),
-            emptyList()
-        )
-        CommonAction.UserPressedHome -> AppEffect(
-            state.copy(uiState = HomeState),
-            emptyList()
-        )
         CommonAction.ServerRejectedToken -> AppEffect(
             state.copy(
                 uiState = WelcomeState,

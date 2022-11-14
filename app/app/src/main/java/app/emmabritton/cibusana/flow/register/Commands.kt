@@ -1,7 +1,7 @@
 package app.emmabritton.cibusana.flow.register
 
 import app.emmabritton.cibusana.errorCodes
-import app.emmabritton.cibusana.flow.common.CommonAction
+import app.emmabritton.cibusana.flow.home.HomeAction
 import app.emmabritton.cibusana.network.models.RegisterRequest
 import app.emmabritton.cibusana.persist.UserController
 import app.emmabritton.cibusana.persist.models.User
@@ -21,7 +21,7 @@ class SubmitUserRegister(private val request: RegisterRequest) : Command {
         result.onSuccess {
             val user = User(request.name, it.token)
             userController.user = user
-            actionReceiver.receive(CommonAction.LoggedIn(user))
+            actionReceiver.receive(HomeAction.UserLoggedIn(user))
         }
 
         result.onFailure { ex->

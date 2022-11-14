@@ -1,4 +1,4 @@
-package app.emmabritton.cibusana.flow.entry
+package app.emmabritton.cibusana.flow.home
 
 import app.emmabritton.cibusana.network.models.FoodResponse
 import app.emmabritton.cibusana.network.models.MealEntryResponse
@@ -9,15 +9,15 @@ import app.emmabritton.cibusana.withEndOfDay
 import app.emmabritton.cibusana.withStartOfDay
 import app.emmabritton.system.ActionReceiver
 import app.emmabritton.system.Command
-import org.koin.java.KoinJavaComponent
+import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
 class GetEntriesForDay(val date: ZonedDateTime) : Command {
-    private val foodController: FoodController by KoinJavaComponent.inject(FoodController::class.java)
-    private val userController: UserController by KoinJavaComponent.inject(UserController::class.java)
-    private val dataController: DataController by KoinJavaComponent.inject(DataController::class.java)
+    private val foodController: FoodController by inject(FoodController::class.java)
+    private val userController: UserController by inject(UserController::class.java)
+    private val dataController: DataController by inject(DataController::class.java)
 
     override fun run(actionReceiver: ActionReceiver) {
         /**
@@ -29,7 +29,7 @@ class GetEntriesForDay(val date: ZonedDateTime) : Command {
         userController.getEntries(date.withStartOfDay(), date.withEndOfDay())
             .onFailure {
                 Timber.e(it, "GetEntriesForDay getEntry")
-                actionReceiver.receive(EntryAction.ServerError)
+                actionReceiver.receive(HomeAction.ServerErrorOccurred)
             }
             .onSuccess { entries ->
                 val foodResults: List<FoodResponse>? =
@@ -50,13 +50,13 @@ class GetEntriesForDay(val date: ZonedDateTime) : Command {
                 val mealTimes = dataController.getMealTimes().getOrNull()
                 if (mealTimes == null) {
                     Timber.e("GetEntriesForDay mealTimes == null")
-                    actionReceiver.receive(EntryAction.ServerError)
+                    actionReceiver.receive(HomeAction.ServerErrorOccurred)
                     return
                 }
 
                 if (foodResults == null) {
                     Timber.e("GetEntriesForDay foodResults == null")
-                    actionReceiver.receive(EntryAction.ServerError)
+                    actionReceiver.receive(HomeAction.ServerErrorOccurred)
                     return
                 }
                 val food: Map<UUID, FoodResponse> = foodResults.associateBy { it.id }
@@ -67,7 +67,7 @@ class GetEntriesForDay(val date: ZonedDateTime) : Command {
                     meals[entry.mealTime]?.add(entry)
                 }
 
-                actionReceiver.receive(EntryAction.ResultsFromServer(food, emptyMap(), meals))
+                actionReceiver.receive(HomeAction.ResultsFromServer(food, emptyMap(), meals))
             }
     }
 

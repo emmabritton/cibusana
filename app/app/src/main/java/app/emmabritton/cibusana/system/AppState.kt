@@ -1,7 +1,7 @@
 package app.emmabritton.cibusana.system
 
 import androidx.annotation.StringRes
-import app.emmabritton.cibusana.flow.common.CommonAction
+import app.emmabritton.cibusana.flow.home.HomeAction
 import app.emmabritton.cibusana.flow.splash.SplashState
 import app.emmabritton.cibusana.flow.welcome.WelcomeAction
 import app.emmabritton.cibusana.persist.models.User
@@ -40,22 +40,28 @@ interface UiState {
     val topBarConfig: TopBarConfig?
 }
 
+sealed class TitleType {
+    class Res(@StringRes val strResId: Int): TitleType()
+    class Str(val text: String): TitleType()
+    class Fmt(@StringRes val strResId: Int, val args: List<String>): TitleType()
+}
+
 interface TopBarConfig {
-    val title: Int
+    val title: TitleType
     val navTargetAction: Action
 }
 
 fun loggedOutBarConfig(@StringRes name: Int): TopBarConfig {
     return object: TopBarConfig {
-        override val title = name
+        override val title = TitleType.Res(name)
         override val navTargetAction = WelcomeAction.Show
     }
 }
 
 fun loggedInBarConfig(@StringRes name: Int): TopBarConfig {
     return object: TopBarConfig {
-        override val title = name
-        override val navTargetAction = CommonAction.UserPressedHome
+        override val title = TitleType.Res(name)
+        override val navTargetAction = HomeAction.ShowToday
     }
 }
 

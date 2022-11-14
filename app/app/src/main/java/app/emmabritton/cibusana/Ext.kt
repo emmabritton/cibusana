@@ -11,5 +11,5 @@ fun Throwable.errorCodes(): List<Int> {
     }
 }
 
-fun ZonedDateTime.withStartOfDay() = this.withHour(0).withMinute(0).withSecond(0)
-fun ZonedDateTime.withEndOfDay() = this.withHour(23).withMinute(59).withSecond(59)
+fun ZonedDateTime.withStartOfDay(): ZonedDateTime = this.withHour(0).withMinute(0).withSecond(0)
+fun ZonedDateTime.withEndOfDay(): ZonedDateTime = this.withHour(23).withMinute(59).withSecond(59)
