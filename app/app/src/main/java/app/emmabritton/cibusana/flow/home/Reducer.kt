@@ -10,10 +10,24 @@ fun reduceHomeAction(action: HomeAction, state: AppState): AppEffect {
         return InvalidState("Tried to run ${action.describe()} for ${state.uiState.javaClass.simpleName}")
     }
     return when (action) {
-        is HomeAction.UserLoggedIn -> AppEffect(state.copy(user = action.user, uiState = HomeState.Loading(ZonedDateTime.now())), listOf(GetEntriesForDay(ZonedDateTime.now())))
-        HomeAction.ServerErrorOccurred -> AppEffect(state.copy(uiState = (state.uiState as HomeState.Loading).toError()), emptyList())
-        HomeAction.ShowToday -> AppEffect(state.copy(uiState = HomeState.Loading(ZonedDateTime.now())), listOf(GetEntriesForDay(ZonedDateTime.now())))
-        is HomeAction.ShowDay -> AppEffect(state.copy(uiState = HomeState.Loading(action.date)), listOf(GetEntriesForDay(action.date)))
+        is HomeAction.UserLoggedIn -> AppEffect(
+            state.copy(
+                user = action.user,
+                uiState = HomeState.Loading(ZonedDateTime.now())
+            ), listOf(GetEntriesForDay(ZonedDateTime.now()))
+        )
+        HomeAction.ServerErrorOccurred -> AppEffect(
+            state.copy(uiState = (state.uiState as HomeState.Loading).toError()),
+            emptyList()
+        )
+        HomeAction.ShowToday -> AppEffect(
+            state.copy(uiState = HomeState.Loading(ZonedDateTime.now())),
+            listOf(GetEntriesForDay(ZonedDateTime.now()))
+        )
+        is HomeAction.ShowDay -> AppEffect(
+            state.copy(uiState = HomeState.Loading(action.date)),
+            listOf(GetEntriesForDay(action.date))
+        )
         HomeAction.UserPressedPrevDay -> {
             val uiState = (state.uiState as HomeState.Viewing)
             val newState = HomeState.Loading(uiState.date.minusDays(1))

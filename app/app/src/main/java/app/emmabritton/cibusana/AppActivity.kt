@@ -80,7 +80,12 @@ private fun TopBar(actionReceiver: ActionReceiver, config: TopBarConfig) {
     TopAppBar(
         title = {
             when (titleText) {
-                is TitleType.Fmt -> Text(stringResource(titleText.strResId, *titleText.args.toTypedArray()))
+                is TitleType.Fmt -> Text(
+                    stringResource(
+                        titleText.strResId,
+                        *titleText.args.toTypedArray()
+                    )
+                )
                 is TitleType.Res -> Text(stringResource(titleText.strResId))
                 is TitleType.Str -> Text(titleText.text)
             }
