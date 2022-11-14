@@ -46,6 +46,12 @@ private fun ViewingUi(
                 Text("Prev")
             }
             TextButton(
+                onClick = { actionReceiver.receive(HomeAction.ShowToday) },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Today")
+            }
+            TextButton(
                 onClick = { actionReceiver.receive(HomeAction.UserPressedNextDay) },
                 modifier = Modifier.weight(1f)
             ) {

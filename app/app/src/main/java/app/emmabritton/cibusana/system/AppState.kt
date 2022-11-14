@@ -7,6 +7,7 @@ import app.emmabritton.cibusana.flow.welcome.WelcomeAction
 import app.emmabritton.cibusana.persist.models.User
 import app.emmabritton.system.Action
 import app.emmabritton.system.State
+import java.time.ZonedDateTime
 
 data class AppState(
     val error: String?,
@@ -44,6 +45,7 @@ sealed class TitleType {
     class Res(@StringRes val strResId: Int): TitleType()
     class Str(val text: String): TitleType()
     class Fmt(@StringRes val strResId: Int, val args: List<String>): TitleType()
+    class Date(val dt: ZonedDateTime): TitleType()
 }
 
 interface TopBarConfig {

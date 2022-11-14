@@ -24,8 +24,11 @@ import app.emmabritton.cibusana.ui.SmallLogo
 import app.emmabritton.cibusana.ui.theme.CibusanaTheme
 import app.emmabritton.system.ActionReceiver
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.koin.java.KoinJavaComponent.inject
 
 class AppActivity : ComponentActivity() {
+    private val dateTimePrinter: DateTimePrinter by inject(DateTimePrinter::class.java)
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +55,7 @@ class AppActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
                             state.uiState.topBarConfig?.let { config ->
-                                TopBar(runtime, config)
+                                TopBar(runtime, config, dateTimePrinter)
                             }
                         },
                         content = {
@@ -75,7 +78,7 @@ class AppActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(actionReceiver: ActionReceiver, config: TopBarConfig) {
+private fun TopBar(actionReceiver: ActionReceiver, config: TopBarConfig, printer: DateTimePrinter) {
     val titleText = config.title
     TopAppBar(
         title = {
@@ -88,6 +91,7 @@ private fun TopBar(actionReceiver: ActionReceiver, config: TopBarConfig) {
                 )
                 is TitleType.Res -> Text(stringResource(titleText.strResId))
                 is TitleType.Str -> Text(titleText.text)
+                is TitleType.Date -> Text(printer.formatDate(titleText.dt))
             }
         },
         navigationIcon = {

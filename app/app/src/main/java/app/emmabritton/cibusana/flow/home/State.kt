@@ -13,7 +13,7 @@ sealed class HomeState(
     val date: ZonedDateTime,
     override val config: UiStateConfig,
     override val topBarConfig: TopBarConfig = object : TopBarConfig {
-        override val title = TitleType.Str(date.toString())
+        override val title = TitleType.Date(date)
         override val navTargetAction = HomeAction.ShowToday
     }
 ) : UiState {
